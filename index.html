@@ -135,6 +135,42 @@
       font-weight: 600;
     }
     .ask-box p { margin: 0; color: #e8edf5; }
+    .toc-panel {
+      padding: 30px 34px;
+      border: 1px solid var(--line);
+      border-top: 5px solid var(--navy);
+      background: var(--white);
+      box-shadow: var(--shadow);
+    }
+    .toc-panel .eyebrow { margin-bottom: 16px; }
+    .toc-list {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px 48px;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+      counter-reset: toc;
+    }
+    .toc-list li { counter-increment: toc; }
+    .toc-list a {
+      display: flex;
+      gap: 14px;
+      align-items: baseline;
+      text-decoration: none;
+      font-weight: 700;
+      color: var(--navy);
+    }
+    .toc-list a::before {
+      content: counter(toc, decimal-leading-zero);
+      color: var(--red);
+      font-family: ui-monospace, monospace;
+      font-size: .8rem;
+    }
+    .toc-list a:hover { text-decoration: underline; }
+    @media (max-width: 820px) {
+      .toc-list { grid-template-columns: 1fr; }
+    }
     .concept-line {
       display: flex;
       flex-wrap: wrap;
@@ -409,19 +445,37 @@
         <ol class="summary-list">
           <li>録音 → AI分析 → 振り返り画面まで、一連の仕組みは<b>すでに稼働</b>(Phase 2)</li>
           <li>直近は<b>分析AIモデルの比較検証</b>を行い、採用モデルを決定</li>
-          <li>その後、過去の自分との比較など<b>「活用」段階へ展開</b>。この進め方について了承をいただきたい</li>
+          <li>その後、過去の自分との比較など<b>「活用」段階へ展開</b></li>
         </ol>
       </aside>
     </div>
   </header>
 
   <main>
-    <section class="section">
+    <section class="section" id="toc">
+      <div class="shell">
+        <nav class="toc-panel" aria-label="目次">
+          <p class="eyebrow">目次</p>
+          <ol class="toc-list">
+            <li><a href="#sec-01">現状の仕組み</a></li>
+            <li><a href="#demo">実際の画面</a></li>
+            <li><a href="#sec-03">何のための仕組みか</a></li>
+            <li><a href="#sec-04">今、蓄積しているもの</a></li>
+            <li><a href="#sec-05">蓄積が進むとできること</a></li>
+            <li><a href="#sec-06">これからの進め方</a></li>
+            <li><a href="#sec-07">目指すこと／目指さないこと</a></li>
+            <li><a href="#appendix">分析方法と技術的な裏付け</a></li>
+          </ol>
+        </nav>
+      </div>
+    </section>
+
+    <section class="section" id="sec-01">
       <div class="shell">
         <div class="section-head">
           <div>
             <p class="eyebrow">01 / 現状</p>
-            <h2>仕組みはすでに動いている</h2>
+            <h2>現状の仕組み</h2>
           </div>
           <p class="muted">録音からAI分析、本人の振り返りまでの一連の流れは実装済みです。録音は比較可能な「観察データ」へ変換されます。</p>
         </div>
@@ -466,7 +520,7 @@
       </div>
     </section>
 
-    <section class="section">
+    <section class="section" id="sec-03">
       <div class="shell">
         <div class="section-head">
           <div>
@@ -489,7 +543,7 @@
       </div>
     </section>
 
-    <section class="section">
+    <section class="section" id="sec-04">
       <div class="shell">
         <div class="section-head">
           <div>
@@ -554,7 +608,7 @@
       </div>
     </section>
 
-    <section class="section">
+    <section class="section" id="sec-05">
       <div class="shell">
         <div class="section-head">
           <div>
@@ -583,7 +637,7 @@
       </div>
     </section>
 
-    <section class="section">
+    <section class="section" id="sec-06">
       <div class="shell">
         <div class="section-head">
           <div><p class="eyebrow">06 / 今後の対応方針</p><h2>これからの進め方</h2></div>
@@ -596,18 +650,10 @@
           <article class="phase"><small>Phase 4</small><h3>参考を探す</h3><p>お気に入り、参考になった、検索。</p></article>
           <article class="phase"><small>Phase 5</small><h3>引き出しを増やす</h3><p>AI観察と本人の振り返りを統合。</p></article>
         </div>
-        <div class="ask-box">
-          <strong>本日ご確認いただきたいこと</strong>
-          <p>
-            現状の共有とあわせて、この進め方 —
-            直近は分析AIモデルの比較検証を進めて採用モデルを決定し、その後 Phase 3(過去の自分との比較)へ展開する —
-            で継続することについて、ご了承をいただきたく存じます。
-          </p>
-        </div>
       </div>
     </section>
 
-    <section class="section">
+    <section class="section" id="sec-07">
       <div class="shell">
         <div class="section-head">
           <div><p class="eyebrow">07 / 運用の約束</p><h2>目指すこと／目指さないこと</h2></div>
@@ -626,7 +672,7 @@
       </div>
     </section>
 
-    <section class="section">
+    <section class="section" id="appendix">
       <div class="shell">
         <div class="section-head">
           <div><p class="eyebrow">Appendix</p><h2>分析方法と技術的な裏付け</h2></div>
