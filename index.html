@@ -311,6 +311,30 @@
       white-space: pre-wrap;
     }
 
+    .demo-frame {
+      border: 1px solid var(--line);
+      background: var(--white);
+      box-shadow: var(--shadow);
+      padding: 14px;
+    }
+    .demo-frame video {
+      display: block;
+      width: 100%;
+      height: auto;
+      background: var(--navy);
+    }
+    .demo-placeholder {
+      display: none;
+      padding: 80px 24px;
+      border: 1px dashed #b9c2ce;
+      background: #f4f6f8;
+      color: var(--muted);
+      text-align: center;
+    }
+    .demo-frame.missing video { display: none; }
+    .demo-frame.missing .demo-placeholder { display: block; }
+    .demo-caption { margin: 14px 2px 0; color: var(--muted); font-size: .82rem; }
+
     footer { padding: 48px 0 70px; color: var(--muted); font-size: .8rem; }
 
     @media (max-width: 820px) {
@@ -386,6 +410,28 @@
             <h3>自分の接客を知る</h3>
             <ul><li>どんな順序で進めたか</li><li>どんな質問・説明・提案をしたか</li><li>どの話題に時間を使ったか</li></ul>
           </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="demo">
+      <div class="shell">
+        <div class="section-head">
+          <div>
+            <p class="eyebrow">Screen demo</p>
+            <h2>実際の画面</h2>
+          </div>
+          <p class="muted">実際に運用している分析画面のキャプチャです。1接客がどのように構造化されるかをご覧いただけます。</p>
+        </div>
+        <div class="demo-frame" id="demoFrame">
+          <video id="demoVideo" controls muted playsinline preload="metadata">
+            <source src="demo.mp4" type="video/mp4">
+          </video>
+          <div class="demo-placeholder">
+            <p style="margin:0; font-weight:700;">デモ動画は準備中です</p>
+            <p style="margin:8px 0 0; font-size:.85rem;">画面キャプチャを近日公開予定です。</p>
+          </div>
+          <p class="demo-caption">※ 画面は開発中のものです。表示されている接客データはサンプルです。</p>
         </div>
       </div>
     </section>
@@ -694,5 +740,15 @@ AIが接客を採点したり、良し悪しを決定したりすることが目
     </div>
   </footer>
 
+  <script>
+    (function () {
+      var frame = document.getElementById('demoFrame');
+      var video = document.getElementById('demoVideo');
+      var source = video.querySelector('source');
+      function markMissing() { frame.classList.add('missing'); }
+      source.addEventListener('error', markMissing);
+      video.addEventListener('error', markMissing);
+    })();
+  </script>
 </body>
 </html>
