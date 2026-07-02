@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>FIRE KIDS | 接客を評価するのではなく、自分の接客を知るための分析基盤</title>
+  <title>FIRE KIDS | AI接客分析の現状と今後の対応方針</title>
   <style>
     :root {
       --ink: #152238;
@@ -102,6 +102,39 @@
       font-weight: 600;
     }
     .hero-note p { margin-bottom: 0; color: #e8edf5; }
+    .summary-list { margin: 0; padding-left: 1.3em; color: #e8edf5; }
+    .summary-list li + li { margin-top: 10px; }
+    .summary-list b { color: #fff; }
+    .purpose-panel {
+      padding: 34px;
+      border: 1px solid var(--line);
+      border-left: 5px solid var(--navy);
+      background: var(--white);
+      box-shadow: var(--shadow);
+    }
+    .purpose-copy {
+      margin-bottom: 14px;
+      font-family: "Hiragino Mincho ProN", "Yu Mincho", serif;
+      font-size: clamp(1.5rem, 3vw, 2.3rem);
+      font-weight: 600;
+      line-height: 1.35;
+      letter-spacing: -.02em;
+    }
+    .ask-box {
+      margin-top: 40px;
+      padding: 30px 34px;
+      color: var(--white);
+      background: var(--navy);
+      border-left: 5px solid var(--red);
+    }
+    .ask-box strong {
+      display: block;
+      margin-bottom: 10px;
+      font-family: "Hiragino Mincho ProN", "Yu Mincho", serif;
+      font-size: 1.35rem;
+      font-weight: 600;
+    }
+    .ask-box p { margin: 0; color: #e8edf5; }
     .concept-line {
       display: flex;
       flex-wrap: wrap;
@@ -364,22 +397,20 @@
   <header class="hero">
     <div class="shell hero-grid">
       <div>
-        <p class="eyebrow">FIRE KIDS / 接客分析構想</p>
-        <h1>接客を評価するのではなく、<br>自分の接客を知る。</h1>
+        <p class="eyebrow">FIRE KIDS / 経営報告</p>
+        <h1>AI接客分析の現状と<br>今後の対応方針</h1>
         <p class="lead">
-          接客録音から、会話の流れ・顧客の関心・自分の接客スタイルを言語化する。
-          AIが答えを決めるのではなく、ウォッチメイト本人が振り返るための材料をつくります。
+          接客録音をAIで構造化し、スタッフ本人の振り返りに活かす取り組みについて、
+          現状と今後の進め方をご報告します。
         </p>
-        <div class="concept-line">
-          <span>採点しない</span><span>指導しない</span><span>根拠へ戻れる</span><span>自分の引き出しを増やす</span>
-        </div>
       </div>
       <aside class="hero-note">
-        <strong>目指す状態</strong>
-        <p>
-          他人の接客をそのまま真似するのではなく、自分自身の接客の特徴と変化を理解し、
-          自分らしい接客の選択肢を増やせる状態。
-        </p>
+        <strong>要点</strong>
+        <ol class="summary-list">
+          <li>録音 → AI分析 → 振り返り画面まで、一連の仕組みは<b>すでに稼働</b>(Phase 2)</li>
+          <li>直近は<b>分析AIモデルの比較検証</b>を行い、採用モデルを決定</li>
+          <li>その後、過去の自分との比較など<b>「活用」段階へ展開</b>。この進め方について了承をいただきたい</li>
+        </ol>
       </aside>
     </div>
   </header>
@@ -389,10 +420,10 @@
       <div class="shell">
         <div class="section-head">
           <div>
-            <p class="eyebrow">Current flow</p>
-            <h2>現在の仕組み</h2>
+            <p class="eyebrow">01 / 現状</p>
+            <h2>仕組みはすでに動いている</h2>
           </div>
-          <p class="muted">録音を保存するだけでなく、あとから比較できる「観察データ」へ変換します。</p>
+          <p class="muted">録音からAI分析、本人の振り返りまでの一連の流れは実装済みです。録音は比較可能な「観察データ」へ変換されます。</p>
         </div>
         <div class="flow">
           <article class="flow-step"><span class="flow-index">01</span><h3>Plaudで録音</h3><p>接客終了後、文字起こしをZapier経由で登録。</p></article>
@@ -418,7 +449,7 @@
       <div class="shell">
         <div class="section-head">
           <div>
-            <p class="eyebrow">Screen demo</p>
+            <p class="eyebrow">02 / 現状</p>
             <h2>実際の画面</h2>
           </div>
         </div>
@@ -439,7 +470,30 @@
       <div class="shell">
         <div class="section-head">
           <div>
-            <p class="eyebrow">Data foundation</p>
+            <p class="eyebrow">03 / 前提</p>
+            <h2>何のための仕組みか</h2>
+          </div>
+          <p class="muted">評価や採点のためではなく、スタッフ本人が自分の接客を知るための仕組みです。</p>
+        </div>
+        <div class="purpose-panel">
+          <p class="purpose-copy">接客を評価するのではなく、自分の接客を知る。</p>
+          <p class="muted">
+            他人の接客をそのまま真似するのではなく、自分自身の接客の特徴と変化を理解し、
+            自分らしい接客の選択肢を増やせる状態を目指します。
+            AIが答えを決めるのではなく、ウォッチメイト本人が振り返るための材料をつくります。
+          </p>
+          <div class="concept-line">
+            <span>採点しない</span><span>指導しない</span><span>根拠へ戻れる</span><span>自分の引き出しを増やす</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="shell">
+        <div class="section-head">
+          <div>
+            <p class="eyebrow">04 / 現状</p>
             <h2>今、蓄積しているもの</h2>
           </div>
           <p class="muted">1回の接客を評価するためではなく、将来「自分の特徴と変化」を見つけるための元データです。</p>
@@ -504,8 +558,8 @@
       <div class="shell">
         <div class="section-head">
           <div>
-            <p class="eyebrow">Future experience</p>
-            <h2>蓄積された未来</h2>
+            <p class="eyebrow">05 / 将来像</p>
+            <h2>蓄積が進むとできること</h2>
           </div>
           <p class="muted">比較の目的は、優劣を決めることではなく、自分にはない選択肢を見つけることです。</p>
         </div>
@@ -532,8 +586,8 @@
     <section class="section">
       <div class="shell">
         <div class="section-head">
-          <div><p class="eyebrow">Roadmap</p><h2>これからの段階</h2></div>
-          <p class="muted">現在は、比較の前提になる1接客の構造化と蓄積基盤をつくっている段階です。</p>
+          <div><p class="eyebrow">06 / 今後の対応方針</p><h2>これからの進め方</h2></div>
+          <p class="muted">現在はPhase 2。直近は分析AIモデルの比較検証を行い、その後「過去の自分との比較」(Phase 3)へ進みます。</p>
         </div>
         <div class="roadmap">
           <article class="phase"><small>Phase 1</small><h3>記録する</h3><p>Plaud連携と文字起こし。</p></article>
@@ -542,13 +596,21 @@
           <article class="phase"><small>Phase 4</small><h3>参考を探す</h3><p>お気に入り、参考になった、検索。</p></article>
           <article class="phase"><small>Phase 5</small><h3>引き出しを増やす</h3><p>AI観察と本人の振り返りを統合。</p></article>
         </div>
+        <div class="ask-box">
+          <strong>本日ご確認いただきたいこと</strong>
+          <p>
+            現状の共有とあわせて、この進め方 —
+            直近は分析AIモデルの比較検証を進めて採用モデルを決定し、その後 Phase 3(過去の自分との比較)へ展開する —
+            で継続することについて、ご了承をいただきたく存じます。
+          </p>
+        </div>
       </div>
     </section>
 
     <section class="section">
       <div class="shell">
         <div class="section-head">
-          <div><p class="eyebrow">Design guardrails</p><h2>目指すこと／目指さないこと</h2></div>
+          <div><p class="eyebrow">07 / 運用の約束</p><h2>目指すこと／目指さないこと</h2></div>
           <p class="muted">機能が増えても、接客評価システムへ変質させないための境界線です。</p>
         </div>
         <div class="guardrails">
@@ -735,7 +797,7 @@ AIが接客を採点したり、良し悪しを決定したりすることが目
 
   <footer>
     <div class="shell">
-      FIRE KIDS 接客分析構想 — 現在地点：Phase 2 / 1接客の構造化と蓄積
+      FIRE KIDS AI接客分析 — 現在地点：Phase 2 / 1接客の構造化と蓄積
     </div>
   </footer>
 
