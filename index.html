@@ -444,7 +444,7 @@
         <strong>要点</strong>
         <ol class="summary-list">
           <li>録音 → AI分析 → 振り返り画面まで、一連の仕組みは<b>すでに稼働</b>(Phase 2)</li>
-          <li>直近は<b>分析AIモデルの比較検証</b>を行い、採用モデルを決定</li>
+          <li>接客分析の手法についてFBを受け、<b>7軸×2層の分析モデル</b>へ要件を改定中(本ページに草案を掲載)</li>
           <li>その後、過去の自分との比較など<b>「活用」段階へ展開</b></li>
         </ol>
       </aside>
@@ -462,6 +462,7 @@
             <li><a href="#sec-03">何のための仕組みか</a></li>
             <li><a href="#sec-04">今、蓄積しているもの</a></li>
             <li><a href="#sec-05">蓄積が進むとできること</a></li>
+            <li><a href="#draft">分析モデルの改定案(草案)</a></li>
             <li><a href="#sec-06">これからの進め方</a></li>
             <li><a href="#sec-07">目指すこと／目指さないこと</a></li>
             <li><a href="#appendix">分析方法と技術的な裏付け</a></li>
@@ -637,11 +638,111 @@
       </div>
     </section>
 
+    <section class="section" id="draft">
+      <div class="shell">
+        <div class="section-head">
+          <div><p class="eyebrow">06 / 検討中</p><h2>分析モデルの改定案(草案)</h2></div>
+          <p class="muted">「接客分析の手法を深掘りし、分析モデルを作る」というFBを受けた要件の書き換え草案です。内容は確定前のたたき台です。</p>
+        </div>
+        <div class="experiment-panel">
+          <span class="experiment-status">DRAFT / 要件改定中</span>
+          <h3>7軸 × 2層(行動指標+スコア)モデル</h3>
+          <p class="muted">
+            目的を「顧客体験の最大化に向けたウォッチメイトの育成」と置き、観察の型を7つの軸に固定します。
+            スコアはAIの印象ではなく、根拠発話に遡れる行動指標から機械的に導出します。
+          </p>
+          <div class="two-lens">
+            <article class="lens">
+              <h3>Layer 1:行動指標(観察層)</h3>
+              <ul>
+                <li>各軸に観察可能な行動指標を3〜5個定義</li>
+                <li>「あった/なかった」+根拠発話IDで記録</li>
+                <li>現行Phase 2の構造化分析をそのまま拡張</li>
+              </ul>
+            </article>
+            <div class="lens-join" aria-hidden="true">→</div>
+            <article class="lens">
+              <h3>Layer 2:スコア(解釈層)</h3>
+              <ul>
+                <li>行動指標の充足パターンから1〜5を機械導出</li>
+                <li>判定機会がなかった軸はnull(低スコアと区別)</li>
+                <li>「なぜこのスコアか」が常に発話へ遡れる</li>
+              </ul>
+            </article>
+          </div>
+          <h3 style="margin-top: 30px;">7つの分析軸(行動指標はすり合わせ中)</h3>
+          <div class="data-grid">
+            <article class="data-card">
+              <strong>軸1 オープニング／第一印象</strong>
+              <p>声かけ前の顧客行動への言及、答えやすい問いかけ、圧の強い展開の有無。※録音範囲に依存するため対象外(null)の場合あり。</p>
+            </article>
+            <article class="data-card">
+              <strong>軸2 ヒアリング</strong>
+              <p>来店目的・予算・使用シーン・知識レベル・避けたい条件を引き出せたか。</p>
+            </article>
+            <article class="data-card">
+              <strong>軸3 商品知識の正確さ(仕分け方式)</strong>
+              <p>型番・年代等の事実主張を抽出し「矛盾なし/要確認/検証不能」へ仕分け。正誤は断定せず、当面スコア対象外。要確認のみ人がレビュー。</p>
+            </article>
+            <article class="data-card">
+              <strong>軸4 専門用語のかみ砕き</strong>
+              <p>専門用語の直後の言い換え・例え・理解確認。時計用語辞書の整備が前提。</p>
+            </article>
+            <article class="data-card">
+              <strong>軸5 傾聴・共感</strong>
+              <p>復唱・要約・受け止めの応答、顧客発話比率、発話の遮りの少なさ。</p>
+            </article>
+            <article class="data-card">
+              <strong>軸6 査定・クロージング誘導</strong>
+              <p>LINE査定の案内、試着・取り置き・次回接点の提案と、そのタイミングの自然さ(顧客反応とセットで観察)。</p>
+            </article>
+            <article class="data-card">
+              <strong>軸7 言葉遣い・NG回避</strong>
+              <p>NGワード・断定的すぎる表現・敬語の乱れの検知。辞書ベースの機械チェック中心。</p>
+            </article>
+            <article class="data-card">
+              <strong>スコア共通アンカー(行動ベース)</strong>
+              <p>5=指標をほぼ満たし顧客反応も確認/4=主要指標を満たす/3=一部のみ/2=機会があったのに行われない場面が目立つ/1=ほぼ観察されない/null=判定機会なし。</p>
+            </article>
+          </div>
+          <p style="margin-top: 26px;">
+            <b>用途の境界:</b>スコアは育成・コーチング目的に限定し、スタッフ間ランキング・人事評価には使いません。
+            従来の「採点しない」はこの形に再定義します(確定後、本ページの他の記載も更新)。
+          </p>
+          <div class="comparison-axis" aria-label="導入ステップ">
+            <span>Step 1:軸・指標の確定と辞書整備</span>
+            <span>Step 2:シャドー運用(スコア非表示で安定性検証)</span>
+            <span>Step 3:本人向け公開・コーチング利用</span>
+          </div>
+        </div>
+        <div class="guardrails" style="margin-top: 18px;">
+          <article class="guardrail negative">
+            <h3>未確定・確認中の事項</h3>
+            <ul>
+              <li>スコアの利用範囲の最終合意(人事評価に使わない境界線)</li>
+              <li>軸3を「仕分け方式・当面スコア対象外」とする扱いでよいか</li>
+              <li>NGワード集・時計用語辞書の整備方法と提供元(研修資料・接客マニュアル等)</li>
+              <li>精度を先行して上げる軸の優先順位</li>
+              <li>スコアの見せ方(本人向け表示の範囲、時系列表示の形)</li>
+            </ul>
+          </article>
+          <article class="guardrail positive">
+            <h3>変えないこと</h3>
+            <ul>
+              <li>観察事実とAI解釈の分離、根拠発話への追跡可能性</li>
+              <li>本人の振り返りを起点にする設計(AIが答えを決めない)</li>
+              <li>既存の蓄積データとの互換(過去の接客にも遡って適用可能)</li>
+            </ul>
+          </article>
+        </div>
+      </div>
+    </section>
+
     <section class="section" id="sec-06">
       <div class="shell">
         <div class="section-head">
-          <div><p class="eyebrow">06 / 今後の対応方針</p><h2>これからの進め方</h2></div>
-          <p class="muted">現在はPhase 2。直近は分析AIモデルの比較検証を行い、その後「過去の自分との比較」(Phase 3)へ進みます。</p>
+          <div><p class="eyebrow">07 / 今後の対応方針</p><h2>これからの進め方</h2></div>
+          <p class="muted">現在はPhase 2。直近は分析モデル(7軸)の要件確定と分析AIモデルの比較検証を進め、その後「過去の自分との比較」(Phase 3)へ進みます。</p>
         </div>
         <div class="roadmap">
           <article class="phase"><small>Phase 1</small><h3>記録する</h3><p>Plaud連携と文字起こし。</p></article>
@@ -656,8 +757,8 @@
     <section class="section" id="sec-07">
       <div class="shell">
         <div class="section-head">
-          <div><p class="eyebrow">07 / 運用の約束</p><h2>目指すこと／目指さないこと</h2></div>
-          <p class="muted">機能が増えても、接客評価システムへ変質させないための境界線です。</p>
+          <div><p class="eyebrow">08 / 運用の約束</p><h2>目指すこと／目指さないこと</h2></div>
+          <p class="muted">機能が増えても、接客評価システムへ変質させないための境界線です。※分析モデル改定(06参照)にあわせ、「点数化」の扱いは「育成目的に限定」へ再定義を検討中です。</p>
         </div>
         <div class="guardrails">
           <article class="guardrail positive">
