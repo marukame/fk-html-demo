@@ -1,0 +1,543 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>FIRE KIDS | 7軸スコアリング・ルーブリック(たたき台)</title>
+  <style>
+    :root {
+      --ink: #152238;
+      --navy: #182b4d;
+      --blue: #315f8f;
+      --silver: #d9dee5;
+      --paper: #f7f8fa;
+      --white: #ffffff;
+      --red: #a52b32;
+      --green: #2c6958;
+      --muted: #637083;
+      --line: #d9dee5;
+      --shadow: 0 18px 50px rgba(21, 34, 56, .1);
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at 82% 8%, rgba(49, 95, 143, .12), transparent 28rem),
+        var(--paper);
+      font-family: -apple-system, BlinkMacSystemFont, "Hiragino Sans", "Yu Gothic UI",
+        "Yu Gothic", "Noto Sans JP", sans-serif;
+      line-height: 1.75;
+    }
+
+    a { color: inherit; }
+    .shell { width: min(1180px, calc(100% - 40px)); margin: 0 auto; }
+    .eyebrow {
+      color: var(--red);
+      font-size: .75rem;
+      font-weight: 800;
+      letter-spacing: .16em;
+      text-transform: uppercase;
+    }
+    .section {
+      padding: 80px 0;
+      border-top: 1px solid var(--line);
+    }
+    .section:first-of-type { border-top: 0; }
+    .section-head {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(260px, .55fr);
+      gap: 48px;
+      align-items: end;
+      margin-bottom: 36px;
+    }
+    h1, h2, h3, p { margin-top: 0; }
+    h1 {
+      max-width: 900px;
+      margin-bottom: 24px;
+      font-family: "Hiragino Mincho ProN", "Yu Mincho", serif;
+      font-size: clamp(2.4rem, 5vw, 4.6rem);
+      font-weight: 600;
+      line-height: 1.14;
+      letter-spacing: -.035em;
+    }
+    h2 {
+      margin-bottom: 0;
+      font-family: "Hiragino Mincho ProN", "Yu Mincho", serif;
+      font-size: clamp(1.8rem, 3.5vw, 3rem);
+      font-weight: 600;
+      line-height: 1.25;
+      letter-spacing: -.025em;
+    }
+    h3 { margin-bottom: 10px; font-size: 1.1rem; line-height: 1.45; }
+    .lead { max-width: 820px; color: #39475b; font-size: clamp(1.02rem, 1.8vw, 1.25rem); }
+    .muted { color: var(--muted); }
+
+    .hero {
+      padding: 66px 0 54px;
+    }
+    .hero-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1.25fr) minmax(320px, .75fr);
+      gap: 56px;
+      align-items: center;
+    }
+    .hero-note {
+      padding: 28px;
+      color: var(--white);
+      background: var(--navy);
+      box-shadow: 18px 18px 0 var(--silver);
+    }
+    .hero-note strong {
+      display: block;
+      margin-bottom: 12px;
+      font-family: "Hiragino Mincho ProN", "Yu Mincho", serif;
+      font-size: 1.5rem;
+      font-weight: 600;
+    }
+    .hero-note p { margin-bottom: 0; color: #e8edf5; }
+    .summary-list { margin: 0; padding-left: 1.3em; color: #e8edf5; }
+    .summary-list li + li { margin-top: 10px; }
+    .summary-list b { color: #fff; }
+
+    .backlink {
+      display: inline-flex; align-items: center; gap: 8px;
+      margin-bottom: 22px; font-size: .82rem; font-weight: 700;
+      color: var(--navy); text-decoration: none;
+    }
+    .backlink::before { content: "←"; color: var(--red); }
+    .backlink:hover { text-decoration: underline; }
+
+    .draft-flag {
+      display: inline-block;
+      margin-left: 14px;
+      padding: 6px 12px;
+      border-radius: 999px;
+      color: var(--white);
+      background: var(--red);
+      font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+      font-size: .72rem;
+      font-weight: 800;
+      letter-spacing: .1em;
+      vertical-align: middle;
+    }
+
+    .purpose-panel {
+      padding: 30px 34px;
+      border: 1px solid var(--line);
+      border-left: 5px solid var(--navy);
+      background: var(--white);
+      box-shadow: var(--shadow);
+    }
+    .purpose-panel + .purpose-panel { margin-top: 16px; border-left-color: var(--green); }
+    .purpose-copy {
+      margin-bottom: 12px;
+      font-family: "Hiragino Mincho ProN", "Yu Mincho", serif;
+      font-size: clamp(1.3rem, 2.4vw, 1.9rem);
+      font-weight: 600;
+      line-height: 1.4;
+      letter-spacing: -.02em;
+    }
+
+    /* score legend */
+    .legend { display: grid; grid-template-columns: repeat(6, minmax(0,1fr)); gap: 12px; }
+    .lg { padding: 18px 16px; border: 1px solid var(--line); background: var(--white); }
+    .lg .n { font-family: ui-monospace, monospace; font-size: 1.9rem; font-weight: 800; line-height: 1; color: var(--navy); }
+    .lg .t { margin-top: 8px; font-size: .82rem; color: var(--muted); }
+    .lg.s5 { border-top: 4px solid var(--green); } .lg.s5 .n { color: var(--green); }
+    .lg.s4 { border-top: 4px solid var(--blue); } .lg.s4 .n { color: var(--blue); }
+    .lg.s3 { border-top: 4px solid #b9862f; } .lg.s3 .n { color: #b9862f; }
+    .lg.s2 { border-top: 4px solid #c0603a; } .lg.s2 .n { color: #c0603a; }
+    .lg.s1 { border-top: 4px solid var(--red); } .lg.s1 .n { color: var(--red); }
+    .lg.sn { border-top: 4px solid var(--muted); } .lg.sn .n { color: var(--muted); font-size: 1.1rem; padding-top: 6px; }
+
+    .note {
+      margin-top: 20px; padding: 20px 24px;
+      border: 1px solid var(--line); border-left: 5px solid var(--red);
+      background: var(--white); box-shadow: var(--shadow);
+    }
+    .note b { color: var(--navy); }
+
+    /* axis */
+    .axis {
+      margin-top: 20px; border: 1px solid var(--line);
+      background: var(--white); box-shadow: var(--shadow);
+    }
+    .axis-head {
+      display: flex; align-items: flex-start; gap: 16px;
+      padding: 22px 26px; border-bottom: 1px solid var(--line);
+      background: #f4f6f8;
+    }
+    .axis-no {
+      flex: 0 0 auto; width: 44px; height: 44px;
+      display: grid; place-items: center;
+      color: var(--white); background: var(--navy);
+      font-family: ui-monospace, monospace; font-weight: 800; font-size: 1.05rem;
+    }
+    .axis-titles { flex: 1 1 auto; }
+    .axis-titles h3 { margin: 0; font-size: 1.2rem; }
+    .axis-titles p { margin: 4px 0 0; color: var(--muted); font-size: .85rem; }
+    .axis-tag {
+      flex: 0 0 auto; align-self: center;
+      padding: 5px 11px; border-radius: 999px;
+      font-size: .72rem; font-weight: 800; letter-spacing: .04em;
+    }
+    .tag-score { color: var(--blue); background: #e6eef6; }
+    .tag-dict  { color: #8a6410; background: #f6ecd4; }
+    .tag-null  { color: var(--muted); background: #e9edf2; }
+    .tag-twin  { color: var(--green); background: #e7f0ed; }
+
+    .axis-body { padding: 10px 26px 24px; }
+    table { width: 100%; border-collapse: collapse; margin: 14px 0 4px; }
+    th, td { text-align: left; padding: 11px 12px; vertical-align: top; border-bottom: 1px solid var(--line); }
+    th { font-size: .72rem; letter-spacing: .05em; color: var(--muted); font-weight: 800; background: #f7f8fa; text-transform: uppercase; }
+    td .ind { font-weight: 700; color: var(--ink); font-size: .93rem; }
+    td .cap { margin: 3px 0 0; font-size: .8rem; color: var(--muted); }
+    td.rec { white-space: nowrap; color: var(--muted); font-size: .78rem; font-family: ui-monospace, monospace; }
+
+    .derive {
+      margin-top: 12px; padding: 12px 16px;
+      border: 1px dashed #b9c2ce; background: #f4f6f8;
+      font-size: .82rem; color: #39475b;
+    }
+    .derive code {
+      padding: 1px 7px; border: 1px solid var(--line); border-radius: 4px;
+      background: var(--white); font-family: ui-monospace, monospace; font-size: .78rem; color: var(--navy);
+    }
+    .coach {
+      margin-top: 12px; padding: 13px 16px;
+      border-left: 3px solid var(--green); background: #e7f0ed;
+      font-size: .85rem; color: #1f4a3d;
+    }
+    .coach b { color: var(--green); }
+
+    /* axis 3 twin */
+    .twin { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-top: 12px; }
+    .pane { padding: 18px 20px; border: 1px solid var(--line); background: #fbfcfd; }
+    .pane.flag { border-style: dashed; background: #f7f8fa; }
+    .pane .h { margin: 0 0 2px; font-weight: 800; font-size: .98rem; }
+    .pane .s { margin: 0 0 10px; font-size: .8rem; color: var(--muted); }
+    .pane table { margin: 4px 0 0; }
+    .pane td { padding: 8px 0; }
+    .chips { display: flex; flex-wrap: wrap; gap: 8px; margin: 4px 0 10px; }
+    .chip { padding: 5px 12px; border-radius: 999px; font-size: .76rem; font-weight: 800; }
+    .chip.ok { color: var(--green); background: #e7f0ed; }
+    .chip.wn { color: var(--red); background: #f6e4e5; }
+    .chip.nv { color: var(--muted); background: #e9edf2; }
+    ul.tight { margin: 6px 0 0; padding-left: 1.2em; }
+    ul.tight li { margin: 4px 0; font-size: .85rem; color: #39475b; }
+
+    /* guardrails (reused pattern) */
+    .guardrails { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; }
+    .guardrail { padding: 28px; border: 1px solid var(--line); background: var(--white); }
+    .guardrail.positive { border-left: 5px solid var(--green); }
+    .guardrail.negative { border-left: 5px solid var(--red); }
+    .guardrail ul { margin: 14px 0 0; padding-left: 1.2em; }
+    .guardrail li { margin: 6px 0; }
+
+    footer { padding: 46px 0 70px; color: var(--muted); font-size: .8rem; }
+    footer .disc { margin-top: 10px; }
+
+    @media (max-width: 820px) {
+      .shell { width: min(100% - 24px, 1180px); }
+      .section { padding: 56px 0; }
+      .hero-grid, .section-head { grid-template-columns: 1fr; gap: 26px; }
+      .legend { grid-template-columns: repeat(2, 1fr); }
+      .twin { grid-template-columns: 1fr; }
+      .guardrails { grid-template-columns: 1fr; }
+      .axis-head { flex-wrap: wrap; }
+    }
+    @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+  </style>
+</head>
+<body>
+  <header class="hero">
+    <div class="shell hero-grid">
+      <div>
+        <a class="backlink" href="index.html">現状と対応方針(トップ)へ戻る</a>
+        <p class="eyebrow">FIRE KIDS / 分析設計</p>
+        <h1>7軸スコアリング<br>ルーブリック<span class="draft-flag">DRAFT / たたき台</span></h1>
+        <p class="lead">
+          「接客分析の手法を深掘りし、分析モデルを作りたい」というご要望を受けた、採点ロジックの中身の草案です。
+          各軸について「どの行動指標を、どう1〜5に導き、どの発話へ遡れるか」を1枚に落としています。指標や言葉づかいはすり合わせ前提です。
+        </p>
+      </div>
+      <aside class="hero-note">
+        <strong>この1枚の狙い</strong>
+        <ul class="summary-list">
+          <li>7軸は<b>先方案をそのまま採用</b>。行動指標→1〜5→根拠発話で"モデル化"</li>
+          <li>スコアは<b>育成・振り返り専用</b>。順位付け・人事評価には出さない</li>
+          <li>軸3は<b>二階建て</b>(伝え方=スコア／正誤=仕分け)</li>
+        </ul>
+      </aside>
+    </div>
+  </header>
+
+  <main>
+    <!-- 目的 -->
+    <section class="section">
+      <div class="shell">
+        <div class="section-head">
+          <div><p class="eyebrow">前提</p><h2>目的とスコアの位置づけ</h2></div>
+          <p class="muted">目的は「顧客体験の最大化に向けたウォッチメイトの育成」。スコアはそのための振り返り材料です。</p>
+        </div>
+        <div class="purpose-panel">
+          <p class="purpose-copy">採点ではなく、育成のためのスコア。</p>
+          <p class="muted">
+            スコアは順位付けや人事評価ではなく、本人が自分の接客を客観的に振り返り、次の一手の引き出しを増やすための材料です。
+            従来の「採点しない」は、<b>根拠発話に遡れる行動指標から機械的に導く育成用スコア</b>として再定義します。
+          </p>
+        </div>
+        <div class="purpose-panel">
+          <p class="muted" style="margin:0">
+            <b>導出の原則:</b> Layer 1(観察)で各行動指標の「あった／なかった」を根拠発話つきで記録し、
+            Layer 2(解釈)でその充足パターンから1〜5を機械導出します。AIの印象では点を付けません。
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- 読み方 -->
+    <section class="section">
+      <div class="shell">
+        <div class="section-head">
+          <div><p class="eyebrow">読み方</p><h2>スコア共通アンカー</h2></div>
+          <p class="muted">1〜5は行動指標の充足で決まります。判定機会がなかった軸はnull(対象外)として、低スコアと明確に区別します。</p>
+        </div>
+        <div class="legend">
+          <div class="lg s5"><div class="n">5</div><div class="t">指標をほぼ満たし、顧客の反応も確認できた</div></div>
+          <div class="lg s4"><div class="n">4</div><div class="t">主要な指標を満たしている</div></div>
+          <div class="lg s3"><div class="n">3</div><div class="t">一部のみ満たす</div></div>
+          <div class="lg s2"><div class="n">2</div><div class="t">機会があったのに行われない場面が目立つ</div></div>
+          <div class="lg s1"><div class="n">1</div><div class="t">ほぼ観察されない</div></div>
+          <div class="lg sn"><div class="n">null</div><div class="t">判定機会なし(録音範囲外・場面が発生せず)</div></div>
+        </div>
+        <div class="note">
+          <b>nullは「悪い」ではありません。</b> 録音の範囲外だったり、その場面自体が起こらなかった軸は、
+          1〜5を付けずnull(対象外)として区別します。無理に点を付けて誤解を生まないための設計です。
+        </div>
+      </div>
+    </section>
+
+    <!-- 各軸 -->
+    <section class="section">
+      <div class="shell">
+        <div class="section-head">
+          <div><p class="eyebrow">7つの軸</p><h2>各軸のルーブリック</h2></div>
+          <p class="muted">各軸に観察可能な行動指標を3〜5個。各指標は「あった／なかった＋根拠発話ID」で記録し、その充足から1〜5を導きます。育成メモは本人フィードバックでの着眼点です。</p>
+        </div>
+
+        <!-- 軸1 -->
+        <div class="axis">
+          <div class="axis-head">
+            <div class="axis-no">1</div>
+            <div class="axis-titles"><h3>オープニング／第一印象</h3><p>声かけのタイミング・圧の強さ・入りの自然さ</p></div>
+            <div class="axis-tag tag-null">録音範囲によりnullあり</div>
+          </div>
+          <div class="axis-body">
+            <table>
+              <tr><th>行動指標</th><th>記録</th></tr>
+              <tr><td><span class="ind">顧客の様子・視線に触れてから声をかけた</span><p class="cap">観察を起点にした接近(唐突でない)</p></td><td class="rec">あった/なかった +#ID</td></tr>
+              <tr><td><span class="ind">答えやすい一言・軽い問いから入った</span><p class="cap">いきなり売り込み・畳みかけでない</p></td><td class="rec">あった/なかった +#ID</td></tr>
+              <tr><td><span class="ind">顧客のペース・反応を見てから本題へ移った</span></td><td class="rec">あった/なかった +#ID</td></tr>
+              <tr><td><span class="ind">一方的な説明・圧の強い展開がない</span><p class="cap">発話交代・畳みかけの有無から観察</p></td><td class="rec">あった/なかった +#ID</td></tr>
+            </table>
+            <div class="derive">導出例：主要2指標＋圧の無さを満たす → <code>4</code>。顧客の好反応まで確認 → <code>5</code>。冒頭が録音に含まれない → <code>null</code>。</div>
+            <div class="coach"><b>育成メモ：</b>「入り方」は本人が自覚しにくい癖が出やすい箇所。圧の強い入りが続く人には、観察起点の一言を引き出しとして増やす。</div>
+          </div>
+        </div>
+
+        <!-- 軸2 -->
+        <div class="axis">
+          <div class="axis-head">
+            <div class="axis-no">2</div>
+            <div class="axis-titles"><h3>ヒアリング</h3><p>目的・予算・使用シーン・知識レベル・避けたい条件を引き出せたか</p></div>
+            <div class="axis-tag tag-score">スコア対象</div>
+          </div>
+          <div class="axis-body">
+            <table>
+              <tr><th>行動指標</th><th>記録</th></tr>
+              <tr><td><span class="ind">来店目的・探しているものを引き出した</span></td><td class="rec">あった/なかった +#ID</td></tr>
+              <tr><td><span class="ind">予算・価格感に触れた</span></td><td class="rec">あった/なかった +#ID</td></tr>
+              <tr><td><span class="ind">使用シーン・用途を確認した</span></td><td class="rec">あった/なかった +#ID</td></tr>
+              <tr><td><span class="ind">顧客の知識レベル・所有歴を確認した</span></td><td class="rec">あった/なかった +#ID</td></tr>
+              <tr><td><span class="ind">避けたい条件・懸念を引き出した</span></td><td class="rec">あった/なかった +#ID</td></tr>
+            </table>
+            <div class="derive">導出例：5指標中4以上＋引き出した条件を後段の提案に接続 → <code>5</code>。3項目 → <code>3</code>。目的も予算も触れず提案へ進む → <code>2</code>。</div>
+            <div class="coach"><b>育成メモ：</b>「聞けた項目数」だけでなく<b>引き出した条件を提案につなげたか</b>を見る。ヒアリングが独立イベントで終わるパターンを可視化。</div>
+          </div>
+        </div>
+
+        <!-- 軸3 二階建て -->
+        <div class="axis">
+          <div class="axis-head">
+            <div class="axis-no">3</div>
+            <div class="axis-titles"><h3>商品知識 ── 伝え方はスコア／正誤は仕分け</h3><p>型番・年代・ムーブメント等の説明。DB・ナレッジが無い前提で、正誤は断定しない</p></div>
+            <div class="axis-tag tag-twin">二階建て</div>
+          </div>
+          <div class="axis-body">
+            <div class="note" style="margin-top:8px; box-shadow:none">
+              正解データ(商品DB・ナレッジDB)が無い現状で「正誤」を採点すると誤検知でスタッフの信頼を損なうため、
+              <b>採点対象を「説明の伝え方・確からしさ」に置き換え</b>、事実の正誤は<b>スコア化せず仕分け＋人の確認</b>に回します。
+            </div>
+            <div class="twin">
+              <div class="pane">
+                <p class="h">① 伝え方(スコア対象・1〜5)</p>
+                <p class="s">DBなしでも観察できる「説明の質」を採点</p>
+                <table>
+                  <tr><td><span class="ind">要点(型番・年代・ムーブメント等)に筋道立てて触れた</span></td></tr>
+                  <tr><td><span class="ind">説明の中で事実の自己矛盾がない</span><p class="cap">会話内整合性チェック</p></td></tr>
+                  <tr><td><span class="ind">断定できない点を適切に保留・確認できている</span><p class="cap">過剰断定を避けた</p></td></tr>
+                  <tr><td><span class="ind">顧客の知識レベルに合わせて情報量を調整した</span></td></tr>
+                </table>
+              </div>
+              <div class="pane flag">
+                <p class="h">② 正誤(非スコア・仕分け)</p>
+                <p class="s">事実主張を抽出し3つに仕分け。要確認のみ人がレビュー</p>
+                <div class="chips">
+                  <span class="chip ok">矛盾なし</span>
+                  <span class="chip wn">要確認</span>
+                  <span class="chip nv">検証不能</span>
+                </div>
+                <ul class="tight">
+                  <li><b>矛盾なし：</b>会話内・一般知識と食い違いなし → そのまま</li>
+                  <li><b>要確認：</b>一般知識と食い違う可能性 → 人が確認</li>
+                  <li><b>検証不能：</b>ニッチで判断保留 → 将来ナレッジ整備時に照合</li>
+                </ul>
+                <p class="cap" style="margin-top:8px">※②はスコアに合算しない。育成では「要確認が出た事実」を学習素材として本人に還元。</p>
+              </div>
+            </div>
+            <div class="coach"><b>育成メモ：</b>正しさの断定は避けつつ、<b>「自信を持って言い切る／適切にぼかす」の使い分け</b>を伸ばす。要確認ログはFK固有の知識コーパスとして自然に蓄積する。</div>
+          </div>
+        </div>
+
+        <!-- 軸4 -->
+        <div class="axis">
+          <div class="axis-head">
+            <div class="axis-no">4</div>
+            <div class="axis-titles"><h3>専門用語のかみ砕き</h3><p>初心者にも伝わる言い換え・例え・理解確認ができているか</p></div>
+            <div class="axis-tag tag-dict">用語辞書が前提</div>
+          </div>
+          <div class="axis-body">
+            <table>
+              <tr><th>行動指標</th><th>記録</th></tr>
+              <tr><td><span class="ind">専門用語の直後に言い換え・例えを添えた</span><p class="cap">時計用語辞書との突合で用語を検出</p></td><td class="rec">あった/なかった +#ID</td></tr>
+              <tr><td><span class="ind">相手の理解を確認する問いを入れた</span><p class="cap">「伝わってますか」等</p></td><td class="rec">あった/なかった +#ID</td></tr>
+              <tr><td><span class="ind">相手のレベル・言葉に合わせて表現を選んだ</span></td><td class="rec">あった/なかった +#ID</td></tr>
+            </table>
+            <div class="derive">導出例：用語出現に対し言い換え率が高く理解確認あり → <code>5</code>。用語は多いが言い換えなし → <code>2</code>。専門用語が出ない接客 → <code>null</code>。</div>
+            <div class="coach"><b>育成メモ：</b>知識がある人ほど無自覚に用語で押す傾向。用語→言い換えの比率を見せると自覚が進む。<b>※時計用語辞書の提供が前提。</b></div>
+          </div>
+        </div>
+
+        <!-- 軸5 -->
+        <div class="axis">
+          <div class="axis-head">
+            <div class="axis-no">5</div>
+            <div class="axis-titles"><h3>傾聴・共感</h3><p>顧客の発話を復唱・要約して受け止めているか</p></div>
+            <div class="axis-tag tag-score">スコア対象</div>
+          </div>
+          <div class="axis-body">
+            <table>
+              <tr><th>行動指標</th><th>記録</th></tr>
+              <tr><td><span class="ind">顧客の発話を復唱・要約して受け止めた</span></td><td class="rec">あった/なかった +#ID</td></tr>
+              <tr><td><span class="ind">顧客の関心・不安を言語化して返した</span></td><td class="rec">あった/なかった +#ID</td></tr>
+              <tr><td><span class="ind">遮らず最後まで聞いた</span><p class="cap">発話のかぶり・交代から観察</p></td><td class="rec">あった/なかった +#ID</td></tr>
+              <tr><td><span class="ind">顧客の発話比率が確保されている</span><p class="cap">一方的でない(既存のトーク比率を活用)</p></td><td class="rec">比率 +#ID</td></tr>
+            </table>
+            <div class="derive">導出例：復唱・要約あり＋顧客発話比率が確保 → <code>5</code>。話は聞くが受け止めの言語化がない → <code>3</code>。終始スタッフが話し続ける → <code>2</code>。</div>
+            <div class="coach"><b>育成メモ：</b>既存の「トーク比率・発話交代回数」がそのまま材料になる軸。数値の裏づけで「聞けている感覚」と実態のズレに気づける。</div>
+          </div>
+        </div>
+
+        <!-- 軸6 -->
+        <div class="axis">
+          <div class="axis-head">
+            <div class="axis-no">6</div>
+            <div class="axis-titles"><h3>査定・クロージング誘導</h3><p>LINE査定や次アクションへ自然につなげたか</p></div>
+            <div class="axis-tag tag-score">スコア対象</div>
+          </div>
+          <div class="axis-body">
+            <table>
+              <tr><th>行動指標</th><th>記録</th></tr>
+              <tr><td><span class="ind">次アクションを具体的に案内した</span><p class="cap">LINE査定・試着・取り置き・再来など</p></td><td class="rec">あった/なかった +#ID</td></tr>
+              <tr><td><span class="ind">顧客の反応・タイミングを見て自然につなげた</span><p class="cap">唐突でない(顧客反応とセットで観察)</p></td><td class="rec">あった/なかった +#ID</td></tr>
+              <tr><td><span class="ind">押し付けでなく選択肢として提示した</span></td><td class="rec">あった/なかった +#ID</td></tr>
+              <tr><td><span class="ind">次接点の約束・条件を残した</span></td><td class="rec">あった/なかった +#ID</td></tr>
+            </table>
+            <div class="derive">導出例：自然なタイミングで次接点を約束＋顧客が前向き反応 → <code>5</code>。案内はあるが唐突／一方的 → <code>3</code>。機会があるのに次につながず終了 → <code>2</code>。</div>
+            <div class="coach"><b>育成メモ：</b>成約の有無で評価しない。<b>「つなぎ方の自然さ」と「次接点を残せたか」</b>を見る。買取・購入に至らなくても取りこぼし表現は使わない。</div>
+          </div>
+        </div>
+
+        <!-- 軸7 -->
+        <div class="axis">
+          <div class="axis-head">
+            <div class="axis-no">7</div>
+            <div class="axis-titles"><h3>言葉遣い・NG回避</h3><p>敬語、断定的すぎる表現、NGワード</p></div>
+            <div class="axis-tag tag-dict">NGワード集が前提</div>
+          </div>
+          <div class="axis-body">
+            <table>
+              <tr><th>行動指標</th><th>記録</th></tr>
+              <tr><td><span class="ind">NGワード・不適切表現がない</span><p class="cap">NGワード集との辞書チェック</p></td><td class="rec">検出数 +#ID</td></tr>
+              <tr><td><span class="ind">過度に断定的な表現を避けた</span></td><td class="rec">あった/なかった +#ID</td></tr>
+              <tr><td><span class="ind">敬語の乱れが目立たない</span></td><td class="rec">あった/なかった +#ID</td></tr>
+              <tr><td><span class="ind">顧客を否定・急かす表現がない</span></td><td class="rec">あった/なかった +#ID</td></tr>
+            </table>
+            <div class="derive">導出例：検出ゼロ＋断定・急かしなし → <code>5</code>。軽微な断定が散発 → <code>3</code>。NGワード検出あり → <code>1〜2</code>(該当箇所を#IDで提示)。</div>
+            <div class="coach"><b>育成メモ：</b>辞書ベースで機械的に検出できる軸。減点ではなく「該当箇所に遡って一緒に確認する」使い方を推奨。<b>※NGワード集の提供が前提。</b></div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- 前提と論点 -->
+    <section class="section">
+      <div class="shell">
+        <div class="section-head">
+          <div><p class="eyebrow">運用の前提</p><h2>必要なもの／変えないこと</h2></div>
+          <p class="muted">この分析モデルを成立させるために先方からお借りしたい資料と、機能が増えても守る境界線です。</p>
+        </div>
+        <div class="guardrails">
+          <article class="guardrail negative">
+            <h3>先方からお借りしたい資料</h3>
+            <ul>
+              <li><b>時計用語辞書</b>(軸4) ── かみ砕き判定の基準になる用語リスト</li>
+              <li><b>NGワード集／接客マニュアル</b>(軸7) ── 検出の辞書</li>
+              <li>軸の<b>優先順位</b>のご希望(例：ヒアリング・査定クロージングを先行して精度向上)</li>
+            </ul>
+          </article>
+          <article class="guardrail positive">
+            <h3>変えないこと</h3>
+            <ul>
+              <li>観察事実とAI解釈の分離、根拠発話への追跡可能性</li>
+              <li>本人の振り返りを起点にする(AIが答えを決めない)</li>
+              <li>スコアは育成・コーチング専用。順位付け・人事評価に出さない</li>
+              <li>既存の蓄積データと互換(過去接客にも遡って適用可能)</li>
+            </ul>
+          </article>
+        </div>
+        <div class="note" style="margin-top:18px">
+          <b>ご相談したい論点：</b>
+          ①スコアは全面的に「育成専用スコア」と再定義して進めてよいか。
+          ②軸3は「伝え方＝スコア／正誤＝仕分け(当面スコア外)」の二階建てでよいか。
+          ③辞書類(時計用語・NGワード)の提供元。
+          ④先行して精度を上げたい軸。
+          ⑤本人向けに1〜5をどこまで見せるか(数字／帯／コメントのみ 等)。
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="shell">
+      FIRE KIDS AI接客分析 — 7軸スコアリング・ルーブリック(たたき台)　|　<a href="index.html">トップへ戻る</a>
+      <p class="disc">本資料は要件すり合わせ用のドラフトです。行動指標・スコアアンカー・軸の粒度は先方との協議で確定します。スコアは接客の優劣判定や人事評価を目的とせず、ウォッチメイト本人の振り返りと育成に用います。</p>
+    </div>
+  </footer>
+</body>
+</html>
