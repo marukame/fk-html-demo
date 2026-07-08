@@ -1,0 +1,323 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>FIRE KIDS | 接客分析 — ヴィンテージ ロレックス</title>
+  <style>
+    :root {
+      --ink: #152238; --navy: #182b4d; --blue: #315f8f; --silver: #d9dee5;
+      --paper: #f7f8fa; --white: #ffffff; --red: #a52b32; --green: #2c6958;
+      --muted: #637083; --line: #d9dee5; --shadow: 0 18px 50px rgba(21, 34, 56, .1);
+      --amber: #b9862f; --orange: #c0603a;
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0; color: var(--ink);
+      background: radial-gradient(circle at 82% 8%, rgba(49, 95, 143, .12), transparent 28rem), var(--paper);
+      font-family: -apple-system, BlinkMacSystemFont, "Hiragino Sans", "Yu Gothic UI", "Yu Gothic", "Noto Sans JP", sans-serif;
+      line-height: 1.75;
+    }
+    a { color: inherit; }
+    .shell { width: min(1180px, calc(100% - 40px)); margin: 0 auto; }
+    .eyebrow { color: var(--red); font-size: .75rem; font-weight: 800; letter-spacing: .16em; text-transform: uppercase; }
+    .section { padding: 72px 0; border-top: 1px solid var(--line); }
+    .section:first-of-type { border-top: 0; }
+    .section-head { display: grid; grid-template-columns: minmax(0, 1fr) minmax(260px, .55fr); gap: 48px; align-items: end; margin-bottom: 30px; }
+    h1, h2, h3, p { margin-top: 0; }
+    h1 { max-width: 900px; margin-bottom: 22px; font-family: "Hiragino Mincho ProN", "Yu Mincho", serif; font-size: clamp(2.2rem, 4.6vw, 4.2rem); font-weight: 600; line-height: 1.14; letter-spacing: -.035em; }
+    h2 { margin-bottom: 0; font-family: "Hiragino Mincho ProN", "Yu Mincho", serif; font-size: clamp(1.7rem, 3.2vw, 2.7rem); font-weight: 600; line-height: 1.25; letter-spacing: -.025em; }
+    h3 { margin-bottom: 10px; font-size: 1.1rem; line-height: 1.45; }
+    .lead { max-width: 820px; color: #39475b; font-size: clamp(1rem, 1.7vw, 1.2rem); }
+    .muted { color: var(--muted); }
+
+    .hero { padding: 60px 0 44px; }
+    .hero-grid { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(320px, .75fr); gap: 52px; align-items: center; }
+    .hero-note { padding: 26px; color: var(--white); background: var(--navy); box-shadow: 18px 18px 0 var(--silver); }
+    .hero-note strong { display: block; margin-bottom: 12px; font-family: "Hiragino Mincho ProN","Yu Mincho",serif; font-size: 1.4rem; font-weight: 600; }
+    .summary-list { margin: 0; padding-left: 1.3em; color: #e8edf5; }
+    .summary-list li + li { margin-top: 10px; }
+    .summary-list b { color: #fff; }
+
+    .backlink { display: inline-flex; align-items: center; gap: 8px; margin-bottom: 20px; font-size: .82rem; font-weight: 700; color: var(--navy); text-decoration: none; }
+    .backlink::before { content: "←"; color: var(--red); }
+    .backlink:hover { text-decoration: underline; }
+    .appbar { border-bottom: 1px solid var(--line); background: var(--white); }
+    .appbar .bar { display: flex; align-items: center; justify-content: space-between; height: 56px; }
+    .brand { font-weight: 800; letter-spacing: .02em; color: var(--navy); }
+    .brand span { color: var(--muted); font-weight: 700; margin-left: 6px; }
+    .tag-sample { font-size: .7rem; font-weight: 800; letter-spacing: .08em; color: var(--red); border: 1px solid #e6b7ba; background: #f9eef0; padding: 5px 10px; border-radius: 999px; }
+    .screen-head { padding: 28px 0 6px; }
+    .crumb { margin: 0 0 8px; font-size: .75rem; letter-spacing: .04em; color: var(--muted); font-weight: 700; }
+    .screen-title { margin: 0 0 8px; font-size: clamp(1.6rem, 3vw, 2.4rem); }
+    .meta-line { margin: 0; color: var(--muted); font-size: .85rem; }
+
+    .detect { display: grid; gap: 12px; }
+    .dcard { display: grid; grid-template-columns: auto 1fr auto; gap: 16px; align-items: center; padding: 16px 20px; border: 1px solid var(--line); background: var(--white); box-shadow: var(--shadow); }
+    .dcard.excluded { background: #f4f6f8; box-shadow: none; color: var(--muted); }
+    .dcard .tcode { font-family: ui-monospace, monospace; font-size: .78rem; color: var(--muted); white-space: nowrap; }
+    .dcard .dtitle { font-weight: 800; }
+    .dcard .dtitle span { display: block; font-weight: 500; font-size: .82rem; color: var(--muted); margin-top: 2px; }
+    .dpill { padding: 5px 12px; border-radius: 999px; font-size: .72rem; font-weight: 800; white-space: nowrap; }
+    .dpill.on { color: var(--white); background: var(--red); }
+    .dpill.off { color: var(--muted); background: #e9edf2; }
+
+    .flag-quality { display: grid; grid-template-columns: auto 1fr; gap: 14px; align-items: start; margin-top: 14px; padding: 16px 20px; border: 1px solid var(--line); border-left: 5px solid var(--amber); background: #fbf6ea; }
+    .flag-quality .ic { font-weight: 800; color: var(--amber); font-size: 1.1rem; }
+    .flag-quality p { margin: 0; font-size: .86rem; color: #6b5620; }
+    .flag-quality b { color: #7a5a10; }
+
+    .transcript { margin-top: 16px; max-height: 300px; overflow: auto; padding: 20px 22px; border: 1px solid var(--line); background: #111b2d; border-radius: 4px; }
+    .transcript .row { display: grid; grid-template-columns: 92px 1fr; gap: 12px; margin-bottom: 10px; font-size: .84rem; line-height: 1.7; }
+    .transcript .tc { color: #7f93b5; font-family: ui-monospace, monospace; font-size: .74rem; }
+    .transcript .sp { color: #e9edf4; }
+    .transcript .s1 .who { color: #7fd1b0; font-weight: 700; }
+    .transcript .s2 .who { color: #f0c674; font-weight: 700; }
+    .transcript .who { margin-right: 6px; }
+
+    .chips-row { display: flex; flex-wrap: wrap; gap: 8px; margin: 4px 0 0; }
+    .info-chip { padding: 7px 13px; border: 1px solid #b9c2ce; border-radius: 999px; background: var(--white); font-size: .8rem; font-weight: 700; color: #425168; }
+    .info-chip b { color: var(--navy); }
+    .info-chip.nullc { color: var(--muted); border-style: dashed; }
+    .info-chip.good { color: var(--green); border-color: #9cc3b4; background: #eef5f1; }
+
+    .balance { margin-top: 18px; padding: 22px 24px; border: 1px solid var(--line); background: var(--white); box-shadow: var(--shadow); }
+    .bar { display: flex; height: 30px; border-radius: 6px; overflow: hidden; margin: 10px 0 8px; font-size: .78rem; font-weight: 800; color: #fff; }
+    .bar .staff { background: var(--navy); display: grid; place-items: center; }
+    .bar .cust { background: var(--blue); display: grid; place-items: center; }
+
+    .scoretable { width: 100%; border-collapse: collapse; margin-top: 8px; background: var(--white); box-shadow: var(--shadow); }
+    .scoretable th, .scoretable td { text-align: left; padding: 14px 16px; border-bottom: 1px solid var(--line); vertical-align: middle; }
+    .scoretable th { font-size: .72rem; letter-spacing: .05em; color: var(--muted); font-weight: 800; text-transform: uppercase; background: #f4f6f8; }
+    .scoretable .axname { font-weight: 800; }
+    .scoretable .axname span { display: block; font-weight: 500; font-size: .8rem; color: var(--muted); margin-top: 2px; }
+    .pill { display: inline-grid; place-items: center; min-width: 34px; height: 34px; padding: 0 8px; border-radius: 8px; font-family: ui-monospace, monospace; font-weight: 800; font-size: 1.05rem; color: #fff; }
+    .p5 { background: var(--green); } .p4 { background: var(--blue); } .p3 { background: var(--amber); }
+    .p2 { background: var(--orange); } .p1 { background: var(--red); }
+    .pnull { background: #e9edf2; color: var(--muted); font-size: .78rem; min-width: 54px; }
+    .scoretable .obs { font-size: .86rem; color: #39475b; }
+
+    .axis { margin-top: 20px; border: 1px solid var(--line); background: var(--white); box-shadow: var(--shadow); }
+    .axis-head { display: flex; align-items: flex-start; gap: 16px; padding: 22px 26px; border-bottom: 1px solid var(--line); background: #f4f6f8; }
+    .axis-no { flex: 0 0 auto; width: 44px; height: 44px; display: grid; place-items: center; color: var(--white); background: var(--navy); font-family: ui-monospace, monospace; font-weight: 800; font-size: 1.05rem; }
+    .axis-titles { flex: 1 1 auto; } .axis-titles h3 { margin: 0; font-size: 1.15rem; } .axis-titles p { margin: 4px 0 0; color: var(--muted); font-size: .85rem; }
+    .axis-score { flex: 0 0 auto; align-self: center; text-align: center; }
+    .axis-score .lbl { display: block; font-size: .64rem; letter-spacing: .05em; color: var(--muted); font-weight: 800; margin-bottom: 4px; }
+    .axis-body { padding: 12px 26px 24px; }
+    .ind-list { list-style: none; margin: 8px 0 0; padding: 0; }
+    .ind-list li { display: grid; grid-template-columns: 26px 1fr auto; gap: 12px; align-items: start; padding: 10px 0; border-bottom: 1px solid #eef1f4; }
+    .ind-list .mk { font-weight: 800; text-align: center; }
+    .ind-list .yes { color: var(--green); } .ind-list .no { color: var(--muted); }
+    .ind-list .txt { font-size: .9rem; }
+    .ind-list .ev { font-family: ui-monospace, monospace; font-size: .72rem; color: var(--blue); white-space: nowrap; }
+    .quote-inline { color: var(--muted); font-size: .8rem; margin-top: 2px; }
+
+    .twin { display: grid; grid-template-columns: .95fr 1.05fr; gap: 14px; margin-top: 14px; }
+    .pane { padding: 18px 20px; border: 1px solid var(--line); background: #fbfcfd; }
+    .pane.flag { border-style: dashed; }
+    .pane .h { margin: 0 0 2px; font-weight: 800; font-size: .98rem; }
+    .pane .s { margin: 0 0 10px; font-size: .8rem; color: var(--muted); }
+
+    .facttable { width: 100%; border-collapse: collapse; font-size: .84rem; }
+    .facttable td { padding: 10px 8px; border-bottom: 1px solid #eef1f4; vertical-align: top; }
+    .facttable .claim { color: var(--ink); }
+    .facttable .why { color: var(--muted); font-size: .78rem; margin-top: 3px; }
+    .facttable .ev { font-family: ui-monospace, monospace; font-size: .7rem; color: var(--blue); }
+    .tag { display: inline-block; padding: 4px 10px; border-radius: 999px; font-size: .72rem; font-weight: 800; white-space: nowrap; }
+    .tag.ok { color: var(--green); background: #e7f0ed; } .tag.wn { color: var(--red); background: #f6e4e5; } .tag.nv { color: var(--muted); background: #e9edf2; }
+    .fact-count { display: flex; gap: 8px; margin-bottom: 10px; flex-wrap: wrap; }
+
+    .note { margin-top: 18px; padding: 18px 22px; border: 1px solid var(--line); border-left: 5px solid var(--red); background: var(--white); box-shadow: var(--shadow); font-size: .92rem; color: #39475b; }
+    .note b { color: var(--navy); }
+    .coach { margin-top: 12px; padding: 13px 16px; border-left: 3px solid var(--green); background: #e7f0ed; font-size: .85rem; color: #1f4a3d; }
+    .coach b { color: var(--green); }
+    .obs-card { margin-top: 14px; padding: 18px 22px; border: 1px solid var(--line); background: var(--white); box-shadow: var(--shadow); }
+    .obs-card h3 { margin: 0 0 6px; font-size: 1rem; }
+    .obs-card p { margin: 0; font-size: .88rem; color: #39475b; }
+    .obs-card .ev { font-family: ui-monospace, monospace; font-size: .72rem; color: var(--blue); }
+
+    footer { padding: 44px 0 70px; color: var(--muted); font-size: .8rem; }
+    footer .disc { margin-top: 10px; }
+
+    @media (max-width: 820px) {
+      .shell { width: min(100% - 24px, 1180px); }
+      .section { padding: 52px 0; }
+      .hero-grid, .section-head { grid-template-columns: 1fr; gap: 24px; }
+      .twin { grid-template-columns: 1fr; }
+      .dcard { grid-template-columns: 1fr; gap: 8px; }
+      .scoretable .obs { display: none; }
+      .ind-list li { grid-template-columns: 22px 1fr; }
+      .ind-list .ev { grid-column: 2; }
+    }
+    @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+  </style>
+</head>
+<body>
+  <header class="appbar">
+    <div class="shell bar">
+      <div class="brand">FIRE KIDS <span>接客分析</span></div>
+      <div class="tag-sample">サンプルデータ</div>
+    </div>
+  </header>
+  <section class="screen-head">
+    <div class="shell">
+      <p class="crumb">接客一覧 ／ この接客</p>
+      <h1 class="screen-title">ヴィンテージ ロレックス（購入検討）</h1>
+      <p class="meta-line">対面・店頭　・　ウォッチメイト（Speaker 1）　・　取り置き成立</p>
+    </div>
+  </section>
+
+  <main>
+    <!-- 入力 -->
+    <section class="section">
+      <div class="shell">
+        <div class="section-head">
+          <div><p class="eyebrow">録音</p><h2>接客の検出</h2></div>
+          <p class="muted">成約後のスタッフ間対応・別客対応は分析対象から外します。</p>
+        </div>
+
+        <div class="detect">
+          <div class="dcard">
+            <div class="tcode">〜00:00–15:23</div>
+            <div class="dtitle">接客：ヴィンテージ ロレックス 購入検討<span>オリジナリティを重視する来店客と、取り置き手続きまで</span></div>
+            <div class="dpill on">本サンプルで表示</div>
+          </div>
+          <div class="dcard excluded">
+            <div class="tcode">15:23〜</div>
+            <div class="dtitle">スタッフ間会話・別客対応・写真送付など<span>「シリアルをLINE送っていいか」「オーバーホール後の写真」等</span></div>
+            <div class="dpill off">分析対象外（自動除外）</div>
+          </div>
+        </div>
+
+        <div class="flag-quality">
+          <div class="ic">!</div>
+          <p><b>データ品質フラグ：話者役割の推定に一部不確実性。</b>文字起こしの話者ラベルが揺れており、発話内容から staff / customer を推定しています。数セグメントは低信頼度のため、根拠発話は原文にリンクして確認できるようにしています。</p>
+        </div>
+
+        <p class="muted" style="margin:20px 0 6px; font-size:.82rem;">▼ 接客の発話（実データ抜粋・話者は発話内容から役割推定）</p>
+        <div class="transcript">
+          <div class="row s2"><span class="tc">00:46</span><span class="sp"><span class="who">顧客</span>針は公開されているんですか（＝オリジナルのままか）。他に箱とか保証書とかっていう…</span></div>
+          <div class="row s1"><span class="tc">01:50</span><span class="sp"><span class="who">スタッフ</span>これはもう時計のみですね。針は交換されてます。</span></div>
+          <div class="row s2"><span class="tc">01:25</span><span class="sp"><span class="who">顧客</span>番号は何番。01434…（商品ページを参照）</span></div>
+          <div class="row s1"><span class="tc">02:30</span><span class="sp"><span class="who">スタッフ</span>うちはリダンしているものは仕入れてないですね。</span></div>
+          <div class="row s1"><span class="tc">08:33</span><span class="sp"><span class="who">スタッフ</span>内金だと10%いただいて1ヶ月取り置き可能です。通常の取り置きだと3日間です。</span></div>
+          <div class="row s1"><span class="tc">10:24</span><span class="sp"><span class="who">スタッフ</span>中野で受け取りたいと電話いただければ、中野に送ってという形もできます。3日間取り置きで。</span></div>
+          <div class="row s1"><span class="tc">15:23</span><span class="sp"><span class="who">スタッフ（対象外）</span>シリアルってLINE送っていいもんなんですか。特定されちゃうんですよね…送らない方がいいですよね。</span></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- サマリー -->
+    <section class="section">
+      <div class="shell">
+        <div class="section-head">
+          <div><p class="eyebrow">この接客</p><h2>サマリー</h2></div>
+        </div>
+
+        <div class="chips-row">
+          <span class="info-chip"><b>接客方法</b> 対面・店頭</span>
+          <span class="info-chip"><b>商品</b> ヴィンテージ ロレックス（1983年・最終型文字盤／針交換）</span>
+          <span class="info-chip"><b>商品ID</b> 01434（自店在庫を参照）</span>
+          <span class="info-chip"><b>新規/リピート</b> リピート（前回来店の言及）</span>
+          <span class="info-chip good"><b>結果</b> 取り置き成立（3日・金曜まで）＋LINE登録</span>
+        </div>
+
+        <div class="balance">
+          <p class="muted" style="margin:0 0 4px; font-size:.82rem;">会話バランス（サンプル値）</p>
+          <div class="bar"><div class="staff" style="width:48%">スタッフ 48%</div><div class="cust" style="width:52%">顧客 52%</div></div>
+          <p class="muted" style="margin:0; font-size:.8rem;">顧客が主導する検討型。スタッフは条件確認と手続き案内で応答しています。</p>
+        </div>
+
+        <table class="scoretable">
+          <tr><th>分析軸</th><th>スコア</th><th class="obs">観察サマリー</th></tr>
+          <tr><td class="axname">軸1 オープニング／第一印象<span>声かけのタイミング・圧</span></td><td><span class="pill pnull">null</span></td><td class="obs">声かけ場面が録音範囲外。対象外として区別。</td></tr>
+          <tr><td class="axname">軸2 ヒアリング<span>目的・予算・用途・知識・条件</span></td><td><span class="pill p3">3</span></td><td class="obs">「シンプル・オリジナル重視」の希望は拾えている。予算・用途の能動的な確認は限定的。</td></tr>
+          <tr><td class="axname">軸3 商品知識<span>伝え方＝スコア／正誤＝仕分け</span></td><td><span class="pill p3">3</span></td><td class="obs">状態・付属を率直に開示。個体状態の主張が多く「検証不能」中心に仕分け。</td></tr>
+          <tr><td class="axname">軸4 専門用語のかみ砕き<span>言い換え・理解確認</span></td><td><span class="pill p3">3</span></td><td class="obs">顧客が有識者のため用語中心。内金など手続き用語は確認しながら説明。</td></tr>
+          <tr><td class="axname">軸5 傾聴・共感<span>復唱・要約・発話比率</span></td><td><span class="pill p3">3</span></td><td class="obs">発話比率は均衡。インフレ懸念など顧客の文脈に沿った受け答え。</td></tr>
+          <tr><td class="axname">軸6 査定・クロージング誘導<span>次アクション・自然さ</span></td><td><span class="pill p4">4</span></td><td class="obs">取り置き・支払い・受け取り店舗まで具体案内し、次接点を確保。</td></tr>
+          <tr><td class="axname">軸7 言葉遣い・NG回避<span>敬語・断定・情報の扱い</span></td><td><span class="pill p5">5</span></td><td class="obs">丁寧でNG表現なし。加えて個人情報リスクに配慮する場面あり（下記）。</td></tr>
+        </table>
+      </div>
+    </section>
+
+    <!-- ドリルダウン -->
+    <section class="section">
+      <div class="shell">
+        <div class="section-head">
+          <div><p class="eyebrow">この接客</p><h2>軸の詳細</h2></div>
+        </div>
+
+        <!-- 軸6 -->
+        <div class="axis">
+          <div class="axis-head">
+            <div class="axis-no">6</div>
+            <div class="axis-titles"><h3>査定・クロージング誘導</h3><p>取り置き成立までの運び</p></div>
+            <div class="axis-score"><span class="lbl">スコア</span><span class="pill p4">4</span></div>
+          </div>
+          <div class="axis-body">
+            <ul class="ind-list">
+              <li><span class="mk yes">✓</span><span class="txt">次アクションを具体的に案内した<div class="quote-inline">内金10%で1ヶ月取り置き／通常は3日間取り置き</div></span><span class="ev">#08:33</span></li>
+              <li><span class="mk yes">✓</span><span class="txt">顧客の状況に合わせ選択肢を提示（受け取り店舗・支払い方法）<div class="quote-inline">中野受け取り可／現金・振込・クレジット・ローン</div></span><span class="ev">#10:00 #10:24</span></li>
+              <li><span class="mk yes">✓</span><span class="txt">次接点を確保した（取り置き成立＋LINE登録＋氏名）</span><span class="ev">#11:55 #13:10</span></li>
+              <li><span class="mk yes">✓</span><span class="txt">押し付けでなく「検討したい」に沿って進めた</span><span class="ev">#05:15 #08:12</span></li>
+            </ul>
+            <div class="coach"><b>育成メモ：</b>取り置き・支払い・受け取りの選択肢を、顧客の迷い（他店在庫・インフレ）に合わせて自然に提示できている強い接客。ヒアリング（軸2）で予算を一言押さえられれば、提案の芯がさらに通る。</div>
+          </div>
+        </div>
+
+        <!-- 軸3 -->
+        <div class="axis">
+          <div class="axis-head">
+            <div class="axis-no">3</div>
+            <div class="axis-titles"><h3>商品知識 ── 伝え方はスコア／正誤は仕分け</h3><p>状態・オリジナリティの説明を分析</p></div>
+            <div class="axis-score"><span class="lbl">伝え方</span><span class="pill p3">3</span></div>
+          </div>
+          <div class="axis-body">
+            <div class="twin">
+              <div class="pane">
+                <p class="h">① 伝え方（スコア対象）</p>
+                <p class="s">DBなしでも観察できる「説明の質」</p>
+                <ul class="ind-list">
+                  <li><span class="mk yes">✓</span><span class="txt">状態・付属（針交換・箱なし）を率直に開示した</span><span class="ev">#01:50</span></li>
+                  <li><span class="mk yes">✓</span><span class="txt">確認できない点を保留した（仕入れ元は非公開）</span><span class="ev">#04:14</span></li>
+                  <li><span class="mk no">△</span><span class="txt">専門用語（リダン等）の言い換えは限定的</span><span class="ev">顧客が有識者</span></li>
+                </ul>
+              </div>
+              <div class="pane flag">
+                <p class="h">② 事実の仕分け（非スコア）</p>
+                <p class="s">主張を抽出し3分類。<b>誤りとは断定しません。</b></p>
+                <div class="fact-count"><span class="tag ok">矛盾なし 2</span><span class="tag wn">要確認 2</span><span class="tag nv">検証不能 2</span></div>
+                <table class="facttable">
+                  <tr><td><span class="tag ok">矛盾なし</span></td><td><div class="claim">リファレンス1016はエクスプローラー</div><div class="why">一般知識と整合。</div></td><td class="ev">#08:12</td></tr>
+                  <tr><td><span class="tag ok">矛盾なし</span></td><td><div class="claim">数が少ない個体は相場が上がりやすい</div><div class="why">一般論として整合。</div></td><td class="ev">#05:48</td></tr>
+                  <tr><td><span class="tag wn">要確認</span></td><td><div class="claim">本個体は1983年製、ブレスも同年代（783）</div><div class="why">年式の具体。シリアル・刻印から人が確認可。</div></td><td class="ev">#03:02</td></tr>
+                  <tr><td><span class="tag wn">要確認</span></td><td><div class="claim">チューダーのデカバラやカルティエ公式リダンは例外的に仕入れる</div><div class="why">仕入れ運用の具体。</div></td><td class="ev">#02:36</td></tr>
+                  <tr><td><span class="tag nv">検証不能</span></td><td><div class="claim">針は交換済み／文字盤はリダンなしでオリジナル</div><div class="why">個体の状態。照合先（商品DB）なし。</div></td><td class="ev">#01:50 #02:12</td></tr>
+                  <tr><td><span class="tag nv">検証不能</span></td><td><div class="claim">オーバーホール証明書は付属しない（この個体）</div><div class="why">個体の付属状況。</div></td><td class="ev">#06:08</td></tr>
+                </table>
+              </div>
+            </div>
+            <div class="coach"><b>育成メモ：</b>この接客は商品トリビアより<b>個体の状態</b>が主題。だから仕分けは「検証不能（照合先なし）」が中心になる。会話に出た<b>商品ID 01434</b>は、将来商品DBが整えば自店の商品説明と突合できる接点になる（現状は照合先なし）。</div>
+          </div>
+        </div>
+
+        <!-- その他の観察：個人情報 -->
+        <div class="obs-card">
+          <h3>その他の観察 ── 情報の取り扱い（good practice）</h3>
+          <p>成約手続きの中で、スタッフが<b>「シリアルナンバーをLINEで送ると個体が特定されうる」</b>ことに気づき、送付を控える判断をしています <span class="ev">#15:23</span>。これは顧客対応そのものではなくスタッフ間のやり取り（対象外）ですが、<b>運用上の良い配慮</b>として拾い、辞書・ガイドライン整備の材料にできます。軸7（言葉遣い・情報の扱い）の観察補助にもなります。</p>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <footer>
+    <div class="shell">
+      FIRE KIDS 接客分析　|　<a href="index.html">トップ</a> ／ <a href="rubric.html">ルーブリック</a>
+      <p class="disc">スコアは表示イメージ用のサンプル値です。育成・振り返りに用い、優劣判定・人事評価には使いません。話者の役割は発話内容からの推定を含みます。</p>
+    </div>
+  </footer>
+</body>
+</html>

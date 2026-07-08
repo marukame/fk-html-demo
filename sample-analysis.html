@@ -1,0 +1,432 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>FIRE KIDS | 接客分析 — グランドセイコー ファースト</title>
+  <style>
+    :root {
+      --ink: #152238; --navy: #182b4d; --blue: #315f8f; --silver: #d9dee5;
+      --paper: #f7f8fa; --white: #ffffff; --red: #a52b32; --green: #2c6958;
+      --muted: #637083; --line: #d9dee5; --shadow: 0 18px 50px rgba(21, 34, 56, .1);
+      --amber: #b9862f; --orange: #c0603a;
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0; color: var(--ink);
+      background: radial-gradient(circle at 82% 8%, rgba(49, 95, 143, .12), transparent 28rem), var(--paper);
+      font-family: -apple-system, BlinkMacSystemFont, "Hiragino Sans", "Yu Gothic UI", "Yu Gothic", "Noto Sans JP", sans-serif;
+      line-height: 1.75;
+    }
+    a { color: inherit; }
+    .shell { width: min(1180px, calc(100% - 40px)); margin: 0 auto; }
+    .eyebrow { color: var(--red); font-size: .75rem; font-weight: 800; letter-spacing: .16em; text-transform: uppercase; }
+    .section { padding: 72px 0; border-top: 1px solid var(--line); }
+    .section:first-of-type { border-top: 0; }
+    .section-head {
+      display: grid; grid-template-columns: minmax(0, 1fr) minmax(260px, .55fr);
+      gap: 48px; align-items: end; margin-bottom: 30px;
+    }
+    h1, h2, h3, p { margin-top: 0; }
+    h1 {
+      max-width: 900px; margin-bottom: 22px;
+      font-family: "Hiragino Mincho ProN", "Yu Mincho", serif;
+      font-size: clamp(2.2rem, 4.6vw, 4.2rem); font-weight: 600; line-height: 1.14; letter-spacing: -.035em;
+    }
+    h2 {
+      margin-bottom: 0; font-family: "Hiragino Mincho ProN", "Yu Mincho", serif;
+      font-size: clamp(1.7rem, 3.2vw, 2.7rem); font-weight: 600; line-height: 1.25; letter-spacing: -.025em;
+    }
+    h3 { margin-bottom: 10px; font-size: 1.1rem; line-height: 1.45; }
+    .lead { max-width: 820px; color: #39475b; font-size: clamp(1rem, 1.7vw, 1.2rem); }
+    .muted { color: var(--muted); }
+
+    .hero { padding: 60px 0 44px; }
+    .hero-grid { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(320px, .75fr); gap: 52px; align-items: center; }
+    .hero-note { padding: 26px; color: var(--white); background: var(--navy); box-shadow: 18px 18px 0 var(--silver); }
+    .hero-note strong { display: block; margin-bottom: 12px; font-family: "Hiragino Mincho ProN","Yu Mincho",serif; font-size: 1.4rem; font-weight: 600; }
+    .summary-list { margin: 0; padding-left: 1.3em; color: #e8edf5; }
+    .summary-list li + li { margin-top: 10px; }
+    .summary-list b { color: #fff; }
+
+    .backlink { display: inline-flex; align-items: center; gap: 8px; margin-bottom: 20px; font-size: .82rem; font-weight: 700; color: var(--navy); text-decoration: none; }
+    .backlink::before { content: "←"; color: var(--red); }
+    .backlink:hover { text-decoration: underline; }
+    .appbar { border-bottom: 1px solid var(--line); background: var(--white); }
+    .appbar .bar { display: flex; align-items: center; justify-content: space-between; height: 56px; }
+    .brand { font-weight: 800; letter-spacing: .02em; color: var(--navy); }
+    .brand span { color: var(--muted); font-weight: 700; margin-left: 6px; }
+    .tag-sample { font-size: .7rem; font-weight: 800; letter-spacing: .08em; color: var(--red); border: 1px solid #e6b7ba; background: #f9eef0; padding: 5px 10px; border-radius: 999px; }
+    .screen-head { padding: 28px 0 6px; }
+    .crumb { margin: 0 0 8px; font-size: .75rem; letter-spacing: .04em; color: var(--muted); font-weight: 700; }
+    .screen-title { margin: 0 0 8px; font-size: clamp(1.6rem, 3vw, 2.4rem); }
+    .meta-line { margin: 0; color: var(--muted); font-size: .85rem; }
+
+    /* detection cards */
+    .detect { display: grid; gap: 12px; }
+    .dcard { display: grid; grid-template-columns: auto 1fr auto; gap: 16px; align-items: center; padding: 16px 20px; border: 1px solid var(--line); background: var(--white); box-shadow: var(--shadow); }
+    .dcard.excluded { background: #f4f6f8; box-shadow: none; color: var(--muted); }
+    .dcard .tcode { font-family: ui-monospace, monospace; font-size: .78rem; color: var(--muted); white-space: nowrap; }
+    .dcard .dtitle { font-weight: 800; }
+    .dcard .dtitle span { display: block; font-weight: 500; font-size: .82rem; color: var(--muted); margin-top: 2px; }
+    .dpill { padding: 5px 12px; border-radius: 999px; font-size: .72rem; font-weight: 800; white-space: nowrap; }
+    .dpill.on { color: var(--white); background: var(--red); }
+    .dpill.sub { color: var(--blue); background: #e6eef6; }
+    .dpill.off { color: var(--muted); background: #e9edf2; }
+
+    /* transcript */
+    .transcript { margin-top: 16px; max-height: 300px; overflow: auto; padding: 20px 22px; border: 1px solid var(--line); background: #111b2d; border-radius: 4px; }
+    .transcript .row { display: grid; grid-template-columns: 92px 1fr; gap: 12px; margin-bottom: 10px; font-size: .84rem; line-height: 1.7; }
+    .transcript .tc { color: #7f93b5; font-family: ui-monospace, monospace; font-size: .74rem; }
+    .transcript .sp { color: #e9edf4; }
+    .transcript .s2 .who { color: #7fd1b0; font-weight: 700; }
+    .transcript .s1 .who { color: #f0c674; font-weight: 700; }
+    .transcript .who { margin-right: 6px; }
+
+    /* chips row */
+    .chips-row { display: flex; flex-wrap: wrap; gap: 8px; margin: 4px 0 0; }
+    .info-chip { padding: 7px 13px; border: 1px solid #b9c2ce; border-radius: 999px; background: var(--white); font-size: .8rem; font-weight: 700; color: #425168; }
+    .info-chip b { color: var(--navy); }
+    .info-chip.nullc { color: var(--muted); border-style: dashed; }
+
+    /* balance */
+    .balance { margin-top: 18px; padding: 22px 24px; border: 1px solid var(--line); background: var(--white); box-shadow: var(--shadow); }
+    .bar { display: flex; height: 30px; border-radius: 6px; overflow: hidden; margin: 10px 0 8px; font-size: .78rem; font-weight: 800; color: #fff; }
+    .bar .staff { background: var(--navy); display: grid; place-items: center; }
+    .bar .cust { background: var(--blue); display: grid; place-items: center; }
+
+    /* score summary table */
+    .scoretable { width: 100%; border-collapse: collapse; margin-top: 8px; background: var(--white); box-shadow: var(--shadow); }
+    .scoretable th, .scoretable td { text-align: left; padding: 14px 16px; border-bottom: 1px solid var(--line); vertical-align: middle; }
+    .scoretable th { font-size: .72rem; letter-spacing: .05em; color: var(--muted); font-weight: 800; text-transform: uppercase; background: #f4f6f8; }
+    .scoretable .axname { font-weight: 800; }
+    .scoretable .axname span { display: block; font-weight: 500; font-size: .8rem; color: var(--muted); margin-top: 2px; }
+    .pill { display: inline-grid; place-items: center; min-width: 34px; height: 34px; padding: 0 8px; border-radius: 8px; font-family: ui-monospace, monospace; font-weight: 800; font-size: 1.05rem; color: #fff; }
+    .p5 { background: var(--green); } .p4 { background: var(--blue); } .p3 { background: var(--amber); }
+    .p2 { background: var(--orange); } .p1 { background: var(--red); }
+    .pnull { background: #e9edf2; color: var(--muted); font-size: .78rem; min-width: 54px; }
+    .scoretable .obs { font-size: .86rem; color: #39475b; }
+
+    /* axis drill */
+    .axis { margin-top: 20px; border: 1px solid var(--line); background: var(--white); box-shadow: var(--shadow); }
+    .axis-head { display: flex; align-items: flex-start; gap: 16px; padding: 22px 26px; border-bottom: 1px solid var(--line); background: #f4f6f8; }
+    .axis-no { flex: 0 0 auto; width: 44px; height: 44px; display: grid; place-items: center; color: var(--white); background: var(--navy); font-family: ui-monospace, monospace; font-weight: 800; font-size: 1.05rem; }
+    .axis-titles { flex: 1 1 auto; } .axis-titles h3 { margin: 0; font-size: 1.15rem; } .axis-titles p { margin: 4px 0 0; color: var(--muted); font-size: .85rem; }
+    .axis-score { flex: 0 0 auto; align-self: center; text-align: center; }
+    .axis-score .lbl { display: block; font-size: .64rem; letter-spacing: .05em; color: var(--muted); font-weight: 800; margin-bottom: 4px; }
+    .axis-body { padding: 12px 26px 24px; }
+    .ind-list { list-style: none; margin: 8px 0 0; padding: 0; }
+    .ind-list li { display: grid; grid-template-columns: 26px 1fr auto; gap: 12px; align-items: start; padding: 10px 0; border-bottom: 1px solid #eef1f4; }
+    .ind-list .mk { font-weight: 800; text-align: center; }
+    .ind-list .yes { color: var(--green); } .ind-list .no { color: var(--muted); }
+    .ind-list .txt { font-size: .9rem; }
+    .ind-list .ev { font-family: ui-monospace, monospace; font-size: .72rem; color: var(--blue); white-space: nowrap; }
+    .quote-inline { color: var(--muted); font-size: .8rem; margin-top: 2px; }
+
+    .twin { display: grid; grid-template-columns: .95fr 1.05fr; gap: 14px; margin-top: 14px; }
+    .pane { padding: 18px 20px; border: 1px solid var(--line); background: #fbfcfd; }
+    .pane.flag { border-style: dashed; }
+    .pane .h { margin: 0 0 2px; font-weight: 800; font-size: .98rem; }
+    .pane .s { margin: 0 0 10px; font-size: .8rem; color: var(--muted); }
+
+    .facttable { width: 100%; border-collapse: collapse; font-size: .84rem; }
+    .facttable td { padding: 10px 8px; border-bottom: 1px solid #eef1f4; vertical-align: top; }
+    .facttable .claim { color: var(--ink); }
+    .facttable .why { color: var(--muted); font-size: .78rem; margin-top: 3px; }
+    .facttable .ev { font-family: ui-monospace, monospace; font-size: .7rem; color: var(--blue); }
+    .tag { display: inline-block; padding: 4px 10px; border-radius: 999px; font-size: .72rem; font-weight: 800; white-space: nowrap; }
+    .tag.ok { color: var(--green); background: #e7f0ed; } .tag.wn { color: var(--red); background: #f6e4e5; } .tag.nv { color: var(--muted); background: #e9edf2; }
+    .fact-count { display: flex; gap: 8px; margin-bottom: 10px; flex-wrap: wrap; }
+
+    .note { margin-top: 18px; padding: 18px 22px; border: 1px solid var(--line); border-left: 5px solid var(--red); background: var(--white); box-shadow: var(--shadow); font-size: .92rem; color: #39475b; }
+    .note b { color: var(--navy); }
+    .coach { margin-top: 12px; padding: 13px 16px; border-left: 3px solid var(--green); background: #e7f0ed; font-size: .85rem; color: #1f4a3d; }
+    .coach b { color: var(--green); }
+
+    footer { padding: 44px 0 70px; color: var(--muted); font-size: .8rem; }
+    footer .disc { margin-top: 10px; }
+
+    @media (max-width: 820px) {
+      .shell { width: min(100% - 24px, 1180px); }
+      .section { padding: 52px 0; }
+      .hero-grid, .section-head { grid-template-columns: 1fr; gap: 24px; }
+      .twin { grid-template-columns: 1fr; }
+      .dcard { grid-template-columns: 1fr; gap: 8px; }
+      .scoretable .obs { display: none; }
+      .ind-list li { grid-template-columns: 22px 1fr; }
+      .ind-list .ev { grid-column: 2; }
+    }
+    @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+  </style>
+</head>
+<body>
+  <header class="appbar">
+    <div class="shell bar">
+      <div class="brand">FIRE KIDS <span>接客分析</span></div>
+      <div class="tag-sample">サンプルデータ</div>
+    </div>
+  </header>
+  <section class="screen-head">
+    <div class="shell">
+      <p class="crumb">接客一覧 ／ この接客</p>
+      <h1 class="screen-title">グランドセイコー ファースト（愛好家の来店）</h1>
+      <p class="meta-line">対面・店頭　・　ウォッチメイト（Speaker 2）　・　録音 約45分</p>
+    </div>
+  </section>
+
+  <main>
+    <!-- 入力 -->
+    <section class="section">
+      <div class="shell">
+        <div class="section-head">
+          <div><p class="eyebrow">録音</p><h2>接客の検出</h2></div>
+          <p class="muted">1件の録音に複数の接客とスタッフ間会話が混在。接客単位に分割します。</p>
+        </div>
+
+        <div class="detect">
+          <div class="dcard">
+            <div class="tcode">〜07:46–20:33</div>
+            <div class="dtitle">接客A：グランドセイコー ファースト<span>愛好家の来店客と、ヴィンテージ国産機について</span></div>
+            <div class="dpill on">本サンプルで表示</div>
+          </div>
+          <div class="dcard">
+            <div class="tcode">〜30:49–41:56</div>
+            <div class="dtitle">接客B：1976年生まれ記念の1本探し<span>生年に合う年代の時計を探す来店客</span></div>
+            <div class="dpill sub">検出（末尾に要約）</div>
+          </div>
+          <div class="dcard excluded">
+            <div class="tcode">随所</div>
+            <div class="dtitle">スタッフ間会話・レジ／休憩・Slack確認 など<span>「小松さんから来てる」「休憩入ります」等</span></div>
+            <div class="dpill off">分析対象外（自動除外）</div>
+          </div>
+        </div>
+
+        <p class="muted" style="margin:20px 0 6px; font-size:.82rem;">▼ 接客Aの発話（実データ抜粋・話者は発話内容から役割推定）</p>
+        <div class="transcript">
+          <div class="row s2"><span class="tc">07:46</span><span class="sp"><span class="who">スタッフ</span>グランドセイコーファーストって、文字盤がまあ3種類ぐらいあるって言われてて、この個体に関しては結構お手頃な、実はモデルなんですよ。</span></div>
+          <div class="row s2"><span class="tc">08:42</span><span class="sp"><span class="who">スタッフ</span>これがちょっとルーペで見るとアップライトって言って、文字盤に盛り上がった感じでくっついてるんですよ。良ければちょっと見てみてください。</span></div>
+          <div class="row s2"><span class="tc">10:41</span><span class="sp"><span class="who">スタッフ</span>6Hにちょうど太陽みたいにちっちゃいマークがついてる。これがいわゆるSDダイヤだと言って、この梁とインデックスの部分が14金とかが使われているんですよ。</span></div>
+          <div class="row s2"><span class="tc">12:30</span><span class="sp"><span class="who">スタッフ</span>クロノメーター証明書って、精度を保証する精度検定というのがある…それが全部揃ってると、もう普通に250万とかなっちゃうんですよ。</span></div>
+          <div class="row s1"><span class="tc">14:22</span><span class="sp"><span class="who">顧客</span>これ40mmぐらいあるのかな、なんだろうな。</span></div>
+          <div class="row s2"><span class="tc">14:40</span><span class="sp"><span class="who">スタッフ</span>あ、これはサイズ感で言うとちょっと調べてますね。もう30mm前半だと思うんですけど…kskで言うと35ですね。</span></div>
+          <div class="row s2"><span class="tc">16:08</span><span class="sp"><span class="who">スタッフ</span>ちょっとまたなんか気になる時あったらいつでも来てください。お住まいお近くとかですか？</span></div>
+          <div class="row s2"><span class="tc">19:18</span><span class="sp"><span class="who">スタッフ</span>シチズンクロノメーターって、作りとか精度で言うと、グランドセイコーファーストより上だって言われてるんですよ。</span></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 接客A サマリー -->
+    <section class="section">
+      <div class="shell">
+        <div class="section-head">
+          <div><p class="eyebrow">接客A</p><h2>サマリー</h2></div>
+        </div>
+
+        <div class="chips-row">
+          <span class="info-chip"><b>接客方法</b> 対面・店頭</span>
+          <span class="info-chip"><b>商品</b> グランドセイコー ファースト（後期・アップライト文字盤）</span>
+          <span class="info-chip"><b>参考価格</b> ¥800,000</span>
+          <span class="info-chip nullc">新規/リピート null（判断材料なし）</span>
+          <span class="info-chip"><b>結果</b> 購入検討（未成約・名刺渡し）</span>
+        </div>
+
+        <div class="balance">
+          <p class="muted" style="margin:0 0 4px; font-size:.82rem;">会話バランス（サンプル値）</p>
+          <div class="bar"><div class="staff" style="width:82%">スタッフ 82%</div><div class="cust" style="width:18%">顧客 18%</div></div>
+          <p class="muted" style="margin:0; font-size:.8rem;">スタッフの説明が中心。発話交代は少なめ ── 傾聴・共感（軸5）の観察材料になります。</p>
+        </div>
+
+        <table class="scoretable">
+          <tr><th>分析軸</th><th>スコア</th><th class="obs">観察サマリー</th></tr>
+          <tr>
+            <td class="axname">軸1 オープニング／第一印象<span>声かけのタイミング・圧</span></td>
+            <td><span class="pill pnull">null</span></td>
+            <td class="obs">声かけ場面が録音範囲外。対象外として区別（低評価ではない）。</td>
+          </tr>
+          <tr>
+            <td class="axname">軸2 ヒアリング<span>目的・予算・用途・知識・条件</span></td>
+            <td><span class="pill p2">2</span></td>
+            <td class="obs">お住まい確認はあるが、目的・予算・用途の掘り下げは乏しい（愛好家の閲覧文脈）。</td>
+          </tr>
+          <tr>
+            <td class="axname">軸3 商品知識<span>伝え方＝スコア／正誤＝仕分け</span></td>
+            <td><span class="pill p4">4</span></td>
+            <td class="obs">伝え方は筋道立ち適切に保留。事実は仕分け（矛盾なし2・要確認5・検証不能2）。</td>
+          </tr>
+          <tr>
+            <td class="axname">軸4 専門用語のかみ砕き<span>言い換え・理解確認</span></td>
+            <td><span class="pill p4">4</span></td>
+            <td class="obs">「アップライト」「SDダイヤ」等を直後に言い換え、ルーペ実演で理解を補助。</td>
+          </tr>
+          <tr>
+            <td class="axname">軸5 傾聴・共感<span>復唱・要約・発話比率</span></td>
+            <td><span class="pill p2">2</span></td>
+            <td class="obs">スタッフ発話比率が高く、顧客発話の復唱・要約は少なめ。</td>
+          </tr>
+          <tr>
+            <td class="axname">軸6 査定・クロージング誘導<span>次アクション・自然さ</span></td>
+            <td><span class="pill p3">3</span></td>
+            <td class="obs">再来・他店舗案内はあるが、LINE査定・取り置き等の具体アクションは弱い。</td>
+          </tr>
+          <tr>
+            <td class="axname">軸7 言葉遣い・NG回避<span>敬語・断定・NGワード</span></td>
+            <td><span class="pill p5">5</span></td>
+            <td class="obs">NG表現なし。断定すべきでない箇所は「〜と言われる」で概ね適切に保留。</td>
+          </tr>
+        </table>
+      </div>
+    </section>
+
+    <!-- ドリルダウン -->
+    <section class="section">
+      <div class="shell">
+        <div class="section-head">
+          <div><p class="eyebrow">接客A</p><h2>軸の詳細</h2></div>
+        </div>
+
+        <!-- 軸3 -->
+        <div class="axis">
+          <div class="axis-head">
+            <div class="axis-no">3</div>
+            <div class="axis-titles"><h3>商品知識 ── 伝え方はスコア／正誤は仕分け</h3><p>グランドセイコー ファーストの説明を分析</p></div>
+            <div class="axis-score"><span class="lbl">伝え方</span><span class="pill p4">4</span></div>
+          </div>
+          <div class="axis-body">
+            <div class="twin">
+              <div class="pane">
+                <p class="h">① 伝え方（スコア対象）</p>
+                <p class="s">DBなしでも観察できる「説明の質」</p>
+                <ul class="ind-list">
+                  <li><span class="mk yes">✓</span><span class="txt">要点（文字盤・素材・年代・相場）に筋道立てて触れた</span><span class="ev">#08:42 #10:41 #12:30</span></li>
+                  <li><span class="mk yes">✓</span><span class="txt">説明内で事実の自己矛盾がない</span><span class="ev">整合OK</span></li>
+                  <li><span class="mk yes">✓</span><span class="txt">断定できない点を適切に保留した<div class="quote-inline">「調べてますね」「詳しくなくて」「〜と言われてて」</div></span><span class="ev">#14:40 #19:18</span></li>
+                  <li><span class="mk no">△</span><span class="txt">顧客の知識レベルに合わせた情報量調整（やや説明過多）</span><span class="ev">軸5と関連</span></li>
+                </ul>
+              </div>
+              <div class="pane flag">
+                <p class="h">② 事実の仕分け（非スコア）</p>
+                <p class="s">主張を抽出し3分類。要確認のみ人がレビュー。<b>誤りとは断定しません。</b></p>
+                <div class="fact-count">
+                  <span class="tag ok">矛盾なし 2</span><span class="tag wn">要確認 5</span><span class="tag nv">検証不能 2</span>
+                </div>
+                <table class="facttable">
+                  <tr>
+                    <td><span class="tag wn">要確認</span></td>
+                    <td><div class="claim">ファーストの文字盤は3種類（プリント／彫り／アップライト）で、本個体は後期アップライト</div><div class="why">具体的な型式区分。会話内では一貫。一般知識では断定できず人が確認。</div></td>
+                    <td class="ev">#07:46<br>#08:42</td>
+                  </tr>
+                  <tr>
+                    <td><span class="tag wn">要確認</span></td>
+                    <td><div class="claim">プリントは初期・約3ヶ月のみ製造で100〜200万</div><div class="why">希少性・相場の具体数値。</div></td>
+                    <td class="ev">#08:42</td>
+                  </tr>
+                  <tr>
+                    <td><span class="tag wn">要確認</span></td>
+                    <td><div class="claim">6時位置の太陽マーク＝SDダイヤ、梁・インデックスに14金</div><div class="why">素材・仕様の具体。</div></td>
+                    <td class="ev">#10:41</td>
+                  </tr>
+                  <tr>
+                    <td><span class="tag wn">要確認</span></td>
+                    <td><div class="claim">フルセット（箱・クロノメーター検定証）で約250万</div><div class="why">相場の具体数値。</div></td>
+                    <td class="ev">#12:30</td>
+                  </tr>
+                  <tr>
+                    <td><span class="tag wn">要確認</span></td>
+                    <td><div class="claim">ケースは金張り</div><div class="why">仕様の具体。</div></td>
+                    <td class="ev">#10:41</td>
+                  </tr>
+                  <tr>
+                    <td><span class="tag ok">矛盾なし</span></td>
+                    <td><div class="claim">クロノメーター検定＝精度を保証する精度検定</div><div class="why">一般知識と整合。</div></td>
+                    <td class="ev">#12:30</td>
+                  </tr>
+                  <tr>
+                    <td><span class="tag ok">矛盾なし</span></td>
+                    <td><div class="claim">当時セイコーは国産最高峰を目指し世界のブランドと競った</div><div class="why">一般知識と整合。</div></td>
+                    <td class="ev">#09:52</td>
+                  </tr>
+                  <tr>
+                    <td><span class="tag nv">検証不能</span></td>
+                    <td><div class="claim">サイズ約35mm（kskで35）</div><div class="why">個体の実測値。照合先なし。</div></td>
+                    <td class="ev">#14:40</td>
+                  </tr>
+                  <tr>
+                    <td><span class="tag nv">検証不能</span></td>
+                    <td><div class="claim">シチズンクロノメーターは作り・精度でGSファーストより上と言われる</div><div class="why">比較評価。ニッチで判断保留。</div></td>
+                    <td class="ev">#19:18</td>
+                  </tr>
+                </table>
+              </div>
+            </div>
+            <div class="coach"><b>育成メモ：</b>要確認が5件と多いが、これは「間違い」ではなく<b>裏取り候補</b>。本人は適切に保留（「調べてますね」）できており、伝え方は高評価。要確認ログはFK固有の知識コーパスとして蓄積していける。</div>
+          </div>
+        </div>
+
+        <!-- 軸2 展開例 -->
+        <div class="axis">
+          <div class="axis-head">
+            <div class="axis-no">2</div>
+            <div class="axis-titles"><h3>ヒアリング</h3><p>行動指標のチェック例</p></div>
+            <div class="axis-score"><span class="lbl">スコア</span><span class="pill p2">2</span></div>
+          </div>
+          <div class="axis-body">
+            <ul class="ind-list">
+              <li><span class="mk no">✗</span><span class="txt">来店目的・探しているものを引き出した</span><span class="ev">観察されず</span></li>
+              <li><span class="mk no">✗</span><span class="txt">予算・価格感に触れた</span><span class="ev">観察されず</span></li>
+              <li><span class="mk no">✗</span><span class="txt">使用シーン・用途を確認した</span><span class="ev">観察されず</span></li>
+              <li><span class="mk no">✗</span><span class="txt">顧客の知識レベル・所有歴を確認した</span><span class="ev">観察されず</span></li>
+              <li><span class="mk yes">✓</span><span class="txt">避けたい条件・生活文脈に触れた<div class="quote-inline">お住まい（川崎）を確認し、横浜・中野店の案内へ接続</div></span><span class="ev">#16:08</span></li>
+            </ul>
+            <div class="coach"><b>育成メモ：</b>愛好家の閲覧では商品説明が主役になりやすい。目的・予算・用途を一言引き出すと、後段の提案が「この人向け」に変わる。ヒアリングは伸びしろが明確な軸。</div>
+          </div>
+        </div>
+
+        <!-- 軸4 展開例（簡易） -->
+        <div class="axis">
+          <div class="axis-head">
+            <div class="axis-no">4</div>
+            <div class="axis-titles"><h3>専門用語のかみ砕き</h3><p>行動指標のチェック例</p></div>
+            <div class="axis-score"><span class="lbl">スコア</span><span class="pill p4">4</span></div>
+          </div>
+          <div class="axis-body">
+            <ul class="ind-list">
+              <li><span class="mk yes">✓</span><span class="txt">専門用語の直後に言い換え・例えを添えた<div class="quote-inline">「アップライトって言って、文字盤に盛り上がった感じ」</div></span><span class="ev">#08:42</span></li>
+              <li><span class="mk yes">✓</span><span class="txt">実物・ルーペで見せて理解を補助した</span><span class="ev">#08:42 #10:41</span></li>
+              <li><span class="mk no">△</span><span class="txt">相手の理解を確認する問い（「伝わってますか」等）</span><span class="ev">明確には観察されず</span></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 接客B 要約 -->
+    <section class="section">
+      <div class="shell">
+        <div class="section-head">
+          <div><p class="eyebrow">接客B（同録音）</p><h2>1976年生まれ記念の1本探し</h2></div>
+        </div>
+        <div class="chips-row" style="margin-bottom:8px">
+          <span class="info-chip"><b>軸2 ヒアリング</b> 4</span>
+          <span class="info-chip"><b>軸3 伝え方</b> 4</span>
+          <span class="info-chip"><b>軸6 クロージング</b> 3</span>
+          <span class="info-chip nullc">軸1 null（範囲外）</span>
+        </div>
+        <div class="note" style="border-left-color: var(--green)">
+          接客Bでは、生年（1976年）・予算感・「人と被りたくない」・ノンデイト三針の好み・記念という用途まで引き出せており、<b>軸2は高評価</b>。
+          クロージングはLINE案内→顧客未登録のためメール可を案内し名刺を渡す流れで、次接点は残せています。
+          軸3の事実仕分けでは「70年代後半＝機械式の冬の時代」は<span class="tag ok">矛盾なし</span>、「75年セイコーの海外向けブルヘッド」等は<span class="tag wn">要確認</span>に振り分けられます。
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <footer>
+    <div class="shell">
+      FIRE KIDS 接客分析　|　<a href="index.html">トップ</a> ／ <a href="rubric.html">ルーブリック</a>
+      <p class="disc">スコアは表示イメージ用のサンプル値です。育成・振り返りに用い、優劣判定・人事評価には使いません。話者の役割は発話内容からの推定を含みます。</p>
+    </div>
+  </footer>
+</body>
+</html>
