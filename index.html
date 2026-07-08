@@ -528,7 +528,7 @@
             <p class="eyebrow">03 / 前提</p>
             <h2>何のための仕組みか</h2>
           </div>
-          <p class="muted">評価や採点のためではなく、スタッフ本人が自分の接客を知るための仕組みです。</p>
+          <p class="muted">序列づけや人事評価のためではなく、スタッフ本人が自分の接客を知り、育てるための仕組みです。</p>
         </div>
         <div class="purpose-panel">
           <p class="purpose-copy">接客を評価するのではなく、自分の接客を知る。</p>
@@ -538,7 +538,7 @@
             AIが答えを決めるのではなく、ウォッチメイト本人が振り返るための材料をつくります。
           </p>
           <div class="concept-line">
-            <span>採点しない</span><span>指導しない</span><span>根拠へ戻れる</span><span>自分の引き出しを増やす</span>
+            <span>序列づけはしない</span><span>育成のためのスコア</span><span>根拠へ戻れる</span><span>自分の引き出しを増やす</span>
           </div>
         </div>
       </div>
@@ -551,7 +551,7 @@
             <p class="eyebrow">04 / 現状</p>
             <h2>今、蓄積しているもの</h2>
           </div>
-          <p class="muted">1回の接客を評価するためではなく、将来「自分の特徴と変化」を見つけるための元データです。</p>
+          <p class="muted">1回の接客を序列づけるためではなく、本人の振り返りと、将来「自分の特徴と変化」を見つけるための材料です。観察データに加え、育成用の軸別スコアも保持します。</p>
         </div>
         <div class="data-grid">
           <article class="data-card">
@@ -601,6 +601,10 @@
           <article class="data-card">
             <strong>比較に使う共通軸</strong>
             <p>話題分類、行動分類、反応分類を共通形式で保存し、本人の時系列変化を比較可能にする。</p>
+          </article>
+          <article class="data-card">
+            <strong>分析軸と育成スコア</strong>
+            <p>7軸の行動指標(あった/なかった)と、その充足から機械導出した1〜5(育成専用)。判定機会のない軸はnull。商品知識軸は伝え方をスコア化し、事実の正誤は仕分けに回す。すべて根拠発話に紐づく。</p>
           </article>
         </div>
         <div class="formula">
@@ -706,10 +710,11 @@
             </article>
           </div>
           <p style="margin-top: 26px; display: flex; flex-wrap: wrap; gap: 12px 28px;">
+            <a href="analysis-full.html" style="font-weight: 800; color: var(--red);">→ 接客分析 画面（フル版：観察＋スコア）を見る</a>
             <a href="rubric.html" style="font-weight: 800; color: var(--red);">→ 7軸スコアリング・ルーブリック(たたき台)を見る</a>
             <a href="sample-analysis.html" style="font-weight: 800; color: var(--red);">→ 分析サンプル画面①（愛好家の来店）を見る</a>
             <a href="sample-analysis-2.html" style="font-weight: 800; color: var(--red);">→ 分析サンプル画面②（購入検討）を見る</a>
-            <a href="screen-mock.html" style="font-weight: 800; color: var(--red);">→ この分析モデルを反映した画面イメージ(たたき台)を見る</a>
+            <a href="screen-mock.html" style="font-weight: 800; color: var(--red);">→ 初期の画面イメージ(たたき台)を見る</a>
           </p>
         </div>
         <div class="guardrails" style="margin-top: 18px;">
@@ -755,16 +760,16 @@
       <div class="shell">
         <div class="section-head">
           <div><p class="eyebrow">08 / 運用の約束</p><h2>目指すこと／目指さないこと</h2></div>
-          <p class="muted">機能が増えても、接客評価システムへ変質させないための境界線です。※分析モデル改定(06参照)にあわせ、「点数化」の扱いは「育成目的に限定」へ再定義を検討中です。</p>
+          <p class="muted">機能が増えても、接客評価システムへ変質させないための境界線です。分析モデル改定(06参照)にあわせ、スコアは育成・振り返り専用に限定します（順位づけ・人事評価には用いません）。</p>
         </div>
         <div class="guardrails">
           <article class="guardrail positive">
             <h3>目指すこと</h3>
-            <ul><li>自分の接客を客観的に振り返る</li><li>過去の自分との変化を知る</li><li>他者から参考ポイントを探す</li><li>自分の接客の引き出しを増やす</li></ul>
+            <ul><li>自分の接客を客観的に振り返る</li><li>軸別の育成スコアで自分の傾向と伸びしろを知る</li><li>過去の自分との変化を知る</li><li>他者から参考ポイントを探し、自分の引き出しを増やす</li></ul>
           </article>
           <article class="guardrail negative">
             <h3>目指さないこと</h3>
-            <ul><li>スタッフランキング</li><li>AIによる人事評価</li><li>接客力や共感力の点数化</li><li>全員を同じ接客方法へ近づけること</li></ul>
+            <ul><li>スタッフランキング</li><li>AIによる人事評価</li><li>育成以外の目的でのスコア利用（評価・選別）</li><li>全員を同じ接客方法へ近づけること</li></ul>
           </article>
         </div>
       </div>
