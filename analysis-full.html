@@ -29,11 +29,12 @@
     /* appbar + screen head */
     .appbar { border-bottom: 1px solid var(--line); background: var(--white); }
     .appbar .bar { display: flex; align-items: center; justify-content: space-between; height: 56px; }
-    .brand { font-weight: 800; letter-spacing: .02em; color: var(--navy); }
+    .brand { font-weight: 800; letter-spacing: .02em; color: var(--navy); text-decoration: none; }
     .brand span { color: var(--muted); font-weight: 700; margin-left: 6px; }
     .tag-sample { font-size: .7rem; font-weight: 800; letter-spacing: .08em; color: var(--red); border: 1px solid #e6b7ba; background: #f9eef0; padding: 5px 10px; border-radius: 999px; }
     .screen-head { padding: 28px 0 6px; }
     .crumb { margin: 0 0 8px; font-size: .75rem; letter-spacing: .04em; color: var(--muted); font-weight: 700; }
+    .crumb a { color: var(--red); text-decoration: none; } .crumb a:hover { text-decoration: underline; }
     .screen-title { margin: 0 0 8px; font-family: "Hiragino Mincho ProN", "Yu Mincho", serif; font-size: clamp(1.6rem, 3vw, 2.4rem); font-weight: 600; letter-spacing: -.02em; }
     .meta-line { margin: 0 0 14px; color: var(--muted); font-size: .85rem; }
     .chips-row { display: flex; flex-wrap: wrap; gap: 8px; }
@@ -135,14 +136,14 @@
 <body>
   <header class="appbar">
     <div class="shell bar">
-      <div class="brand">FIRE KIDS <span>接客分析</span></div>
+      <a href="index.html" class="brand">FIRE KIDS <span>接客分析</span></a>
       <div class="tag-sample">サンプルデータ</div>
     </div>
   </header>
 
   <section class="screen-head">
     <div class="shell">
-      <p class="crumb">接客一覧 ／ この接客</p>
+      <p class="crumb"><a href="index.html">トップ</a> › <a href="index.html#draft">画面サンプル</a> › ヴィンテージ ロレックス</p>
       <h1 class="screen-title">ヴィンテージ ロレックス（購入検討）</h1>
       <p class="meta-line">対面・店頭　・　ウォッチメイト（Speaker 1）　・　録音 約21分</p>
       <div class="chips-row">
