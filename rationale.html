@@ -1,0 +1,756 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex">
+  <title>接客分析 — なぜこの項目を見るのか</title>
+</head>
+<body>
+<style>
+  /* FKBIZ デザインシステム準拠（ライト固定） */
+  :root, :root[data-theme="dark"], :root[data-theme="light"] {
+    --paper: #F8F7F5;
+    --card: #FFFFFF;
+    --ink: #23221E;
+    --muted: #6B6862;
+    --line: #E8E6E2;
+    --line-soft: #F0EEEA;
+    --accent: #8E1728;
+    --accent-ink: #74101E;
+    --accent-soft: #F8ECEE;
+    --brass: #C97A00;
+    --ace-bg: #F8ECEE;
+    --good: #0F8A5B;
+    --blue: #2A6FDB;
+    --amber: #C97A00;
+    --hollow: #ABA8A2;
+  }
+  html { color-scheme: light; }
+
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: "Hiragino Sans", "Hiragino Kaku Gothic ProN", "Yu Gothic", "Noto Sans JP", sans-serif;
+    font-size: 15px;
+    line-height: 1.85;
+    font-feature-settings: "palt";
+  }
+  .wrap { max-width: 920px; margin: 0 auto; padding: 0 28px 96px; }
+
+  .serif { font-family: "Hiragino Mincho ProN", "Yu Mincho", "Noto Serif JP", serif; }
+  h1, h2, h3 { font-family: "Hiragino Mincho ProN", "Yu Mincho", "Noto Serif JP", serif; text-wrap: balance; }
+
+  /* ---------- hero ---------- */
+  .hero { padding: 84px 0 40px; border-bottom: 1px solid var(--line); }
+  .eyebrow {
+    font-size: 11.5px; letter-spacing: .22em; color: var(--accent);
+    font-weight: 600; margin-bottom: 18px;
+  }
+  .hero h1 { font-size: clamp(30px, 5vw, 44px); font-weight: 600; margin: 0 0 8px; line-height: 1.35; }
+  .hero .sub { color: var(--muted); font-size: 15px; margin: 0 0 30px; }
+  .thesis {
+    border-left: 3px solid var(--accent);
+    padding: 6px 0 6px 22px;
+    max-width: 44em;
+  }
+  .thesis p { margin: 0; font-size: 16.5px; line-height: 2.0; }
+  .thesis .kicker { color: var(--accent-ink); font-weight: 600; }
+  .q4 { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 28px; }
+  .q4 span {
+    border: 1px solid var(--line); background: var(--card);
+    padding: 7px 16px; font-size: 13px; letter-spacing: .04em;
+    color: var(--ink);
+  }
+  .q4 span b { color: var(--accent-ink); font-weight: 600; margin-right: 6px; font-family: "Hiragino Mincho ProN","Yu Mincho",serif; }
+  .draft {
+    margin-top: 26px; font-size: 12px; color: var(--muted); letter-spacing: .06em;
+  }
+
+  /* ---------- toc ---------- */
+  .toc { display: flex; flex-wrap: wrap; gap: 6px 26px; padding: 20px 0; border-bottom: 1px solid var(--line); font-size: 13px; }
+  .toc a { color: var(--muted); text-decoration: none; }
+  .toc a:hover, .toc a:focus-visible { color: var(--accent-ink); }
+  .toc a::before { content: attr(data-n) "  "; color: var(--brass); font-size: 11px; letter-spacing: .08em; }
+  a:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+
+  /* ---------- sections ---------- */
+  section { padding-top: 72px; }
+  .sec-head { margin-bottom: 30px; }
+  .sec-head .no {
+    font-size: 12px; letter-spacing: .24em; color: var(--brass); font-weight: 600;
+    margin-bottom: 10px;
+  }
+  .sec-head h2 { font-size: 27px; font-weight: 600; margin: 0 0 10px; }
+  .sec-head .lede { color: var(--muted); max-width: 46em; margin: 0; font-size: 14.5px; }
+
+  /* ---------- strength dots ---------- */
+  .dot { display: inline-block; width: 9px; height: 9px; border-radius: 50%; vertical-align: 1px; }
+  .dot.g { background: var(--good); }
+  .dot.b { background: var(--blue); }
+  .dot.y { background: var(--amber); }
+  .dot.h { background: transparent; border: 1.5px solid var(--hollow); }
+  .legend { display: flex; flex-wrap: wrap; gap: 8px 22px; font-size: 12.5px; color: var(--muted); margin: 22px 0 0; }
+  .legend span { white-space: nowrap; }
+  .legend .dot { margin-right: 6px; }
+
+  /* ---------- flow diagram ---------- */
+  .flow { display: flex; flex-direction: column; align-items: stretch; gap: 0; margin: 8px 0 34px; }
+  .flow-box {
+    background: var(--card); border: 1px solid var(--line); padding: 14px 22px;
+    display: flex; align-items: baseline; gap: 16px; flex-wrap: wrap;
+  }
+  .flow-box .tag { font-size: 11px; letter-spacing: .16em; color: var(--brass); font-weight: 600; min-width: 5.5em; }
+  .flow-box .body { font-size: 14.5px; }
+  .flow-box.result { border-color: var(--accent); border-width: 1px 1px 3px 1px; }
+  .flow-arrow {
+    align-self: center; color: var(--muted); font-size: 12px; padding: 6px 0;
+    display: flex; align-items: center; gap: 10px;
+  }
+  .flow-arrow::before { content: "↓"; color: var(--brass); font-size: 15px; }
+
+  .paths { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 14px; }
+  .path {
+    background: var(--card); border: 1px solid var(--line); border-top: 3px solid var(--accent);
+    padding: 18px 20px 16px;
+  }
+  .path .p-no { font-family: "Hiragino Mincho ProN","Yu Mincho",serif; color: var(--accent-ink); font-size: 13px; letter-spacing: .1em; margin-bottom: 4px; }
+  .path h3 { font-size: 16.5px; margin: 0 0 8px; font-weight: 600; }
+  .path p { margin: 0 0 10px; font-size: 13px; color: var(--muted); line-height: 1.75; }
+  .path .st { font-size: 12px; color: var(--muted); }
+  .path .st .dot { margin-right: 4px; }
+
+  /* ---------- mechanisms ---------- */
+  .mechs { border-top: 1px solid var(--line); }
+  .mech { display: grid; grid-template-columns: 15em 1fr; gap: 6px 30px; padding: 16px 0; border-bottom: 1px solid var(--line-soft); }
+  .mech h3 { font-size: 15px; margin: 0; font-weight: 600; font-family: inherit; }
+  .mech h3 .dot { margin-left: 8px; }
+  .mech p { margin: 0; font-size: 13.5px; color: var(--muted); }
+  .mech p b { color: var(--ink); font-weight: 600; }
+  .mech .mv { display: grid; gap: 8px; }
+  .mech .fn { font-size: 11.5px; color: var(--muted); border-left: 2px solid var(--line); padding-left: 12px; line-height: 1.7; }
+  @media (max-width: 640px) { .mech { grid-template-columns: 1fr; } }
+
+  /* ---------- matrix ---------- */
+  .matrix-scroll { overflow-x: auto; border: 1px solid var(--line); background: var(--card); }
+  table.matrix { border-collapse: collapse; width: 100%; min-width: 660px; font-size: 13.5px; }
+  .matrix th, .matrix td { padding: 10px 14px; text-align: center; border-bottom: 1px solid var(--line-soft); white-space: nowrap; }
+  .matrix thead th {
+    font-size: 12px; letter-spacing: .08em; color: var(--muted); font-weight: 600;
+    border-bottom: 1px solid var(--line); background: var(--card);
+  }
+  .matrix td.item { text-align: left; font-weight: 500; white-space: normal; min-width: 15em; }
+  .matrix td.item small { display: block; color: var(--muted); font-weight: 400; font-size: 11.5px; letter-spacing: .02em; }
+  .matrix .full { color: var(--accent-ink); font-size: 15px; }
+  .matrix .part { color: var(--brass); font-size: 15px; }
+  .matrix .none { color: var(--hollow); }
+  .matrix tr.ace td { background: var(--ace-bg); }
+  .matrix tr.ace td.item::before { content: "★ "; color: var(--brass); }
+  .matrix .rolebadge {
+    display: inline-block; font-size: 11px; letter-spacing: .06em; color: var(--muted);
+    border: 1px solid var(--line); padding: 1px 9px; border-radius: 999px;
+  }
+  .matrix-note { font-size: 12.5px; color: var(--muted); margin-top: 14px; }
+  .matrix-note b { color: var(--accent-ink); }
+
+  /* ---------- item cards ---------- */
+  .group-label {
+    display: flex; align-items: baseline; gap: 14px;
+    margin: 44px 0 16px; font-family: "Hiragino Mincho ProN","Yu Mincho",serif;
+  }
+  .group-label h3 { font-size: 18px; margin: 0; font-weight: 600; }
+  .group-label .rule { flex: 1; height: 1px; background: var(--line); }
+  .group-label .where { font-size: 12px; color: var(--muted); font-family: "Hiragino Sans","Yu Gothic",sans-serif; letter-spacing: .06em; }
+
+  .card {
+    background: var(--card); border: 1px solid var(--line); padding: 22px 26px 20px;
+    margin-bottom: 14px;
+  }
+  .card.ace { border-left: 3px solid var(--accent); }
+  .card-head { display: flex; align-items: baseline; gap: 14px; flex-wrap: wrap; margin-bottom: 4px; }
+  .card-head h4 { font-size: 17px; margin: 0; font-weight: 600; font-family: "Hiragino Mincho ProN","Yu Mincho",serif; }
+  .card-head h4 .star { color: var(--brass); margin-right: 4px; }
+  .chips { display: flex; gap: 6px; flex-wrap: wrap; margin-left: auto; }
+  .chip {
+    font-size: 11px; letter-spacing: .05em; padding: 2px 10px; border-radius: 999px;
+    border: 1px solid var(--line); color: var(--muted); white-space: nowrap;
+  }
+  .chip.main { background: var(--accent-soft); border-color: transparent; color: var(--accent-ink); font-weight: 600; }
+  .chip.guard { border-style: dashed; }
+  .obs { font-size: 13px; color: var(--muted); margin: 0 0 14px; }
+
+  .lack {
+    border: 1px dashed var(--accent); background: transparent;
+    padding: 12px 18px; margin: 0 0 14px; font-size: 13.5px; line-height: 1.8;
+  }
+  .lack .lk-label {
+    display: block; font-size: 11px; letter-spacing: .18em; color: var(--accent-ink);
+    font-weight: 600; margin-bottom: 3px;
+  }
+  .lack b { color: var(--accent-ink); }
+
+  .card-rows { display: grid; gap: 8px; }
+  .crow { display: grid; grid-template-columns: 8.5em 1fr; gap: 20px; font-size: 13.5px; }
+  .crow .k { color: var(--brass); font-size: 12px; letter-spacing: .1em; font-weight: 600; padding-top: 2px; }
+  .crow .v { color: var(--ink); }
+  .crow .v .dim { color: var(--muted); }
+  .crow .v b { color: var(--accent-ink); font-weight: 600; }
+  .honest {
+    margin-top: 12px; font-size: 12.5px; color: var(--muted);
+    border-top: 1px solid var(--line-soft); padding-top: 10px;
+  }
+  .honest::before { content: "正直に — "; color: var(--brass); font-weight: 600; letter-spacing: .05em; }
+  @media (max-width: 560px) { .crow { grid-template-columns: 1fr; gap: 2px; } .chips { margin-left: 0; } }
+
+  .axes { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 8px 22px; margin: 4px 0 0; padding: 0; list-style: none; }
+  .axes li { font-size: 13px; border-bottom: 1px solid var(--line-soft); padding: 7px 0; }
+  .axes li b { font-weight: 600; }
+  .axes li span { color: var(--muted); font-size: 12.5px; display: block; }
+
+  /* ---------- highlight rules ---------- */
+  .rules { counter-reset: rule; display: grid; gap: 0; border-top: 1px solid var(--line); }
+  .rule-item { display: grid; grid-template-columns: 56px 1fr; gap: 22px; padding: 18px 0; border-bottom: 1px solid var(--line-soft); align-items: baseline; }
+  .rule-item::before {
+    counter-increment: rule; content: counter(rule, decimal-leading-zero);
+    font-family: "Hiragino Mincho ProN","Yu Mincho",serif; font-size: 24px; color: var(--brass);
+    text-align: right; font-feature-settings: "tnum"; font-variant-numeric: tabular-nums;
+  }
+  .rule-item p { margin: 0; font-size: 14.5px; }
+  .rule-item p b { color: var(--accent-ink); }
+  .pull {
+    margin: 34px 0 0; padding: 0 0 0 24px; border-left: 3px solid var(--brass);
+  }
+  .pull p { font-family: "Hiragino Mincho ProN","Yu Mincho",serif; font-size: 19px; margin: 0; line-height: 1.9; }
+  .pull small { color: var(--muted); font-size: 12.5px; }
+
+  /* ---------- ossification ---------- */
+  .oss { border-top: 1px solid var(--line); }
+  .oss-row { display: grid; grid-template-columns: 1fr 1.4fr; gap: 26px; padding: 15px 0; border-bottom: 1px solid var(--line-soft); font-size: 13.5px; }
+  .oss-row .cause { color: var(--ink); font-weight: 500; }
+  .oss-row .cause::before { content: "✕ "; color: var(--hollow); }
+  .oss-row .fix { color: var(--muted); }
+  .oss-row .fix b { color: var(--ink); font-weight: 600; }
+  @media (max-width: 640px) { .oss-row { grid-template-columns: 1fr; gap: 4px; } }
+
+  .loop {
+    margin-top: 30px; background: var(--card); border: 1px solid var(--line); border-top: 3px solid var(--brass);
+    padding: 22px 26px;
+  }
+  .loop h3 { margin: 0 0 8px; font-size: 16.5px; font-weight: 600; }
+  .loop p { margin: 0 0 16px; font-size: 13.5px; color: var(--muted); }
+  .loop-flow { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; font-size: 13px; }
+  .loop-flow .n { background: var(--accent-soft); color: var(--accent-ink); padding: 8px 16px; font-weight: 500; }
+  .loop-flow .a { color: var(--brass); }
+
+  /* ---------- future timeline ---------- */
+  .tl { border-left: 1px solid var(--line); margin-left: 6px; }
+  .tl-item { position: relative; padding: 4px 0 26px 30px; }
+  .tl-item::before {
+    content: ""; position: absolute; left: -5px; top: 12px; width: 9px; height: 9px;
+    background: var(--paper); border: 2px solid var(--brass); border-radius: 50%;
+  }
+  .tl-item.big::before { border-color: var(--accent); background: var(--accent); }
+  .tl-item .when { font-size: 12px; letter-spacing: .12em; color: var(--brass); font-weight: 600; }
+  .tl-item h3 { font-size: 16px; margin: 4px 0 4px; font-weight: 600; font-family: "Hiragino Mincho ProN","Yu Mincho",serif; }
+  .tl-item p { margin: 0; font-size: 13.5px; color: var(--muted); max-width: 44em; }
+  .tl-item p b { color: var(--ink); }
+
+  /* ---------- verification ---------- */
+  .layers { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 14px; margin-bottom: 30px; }
+  .layer { background: var(--card); border: 1px solid var(--line); padding: 18px 20px; }
+  .layer .l-no { font-size: 11px; letter-spacing: .18em; color: var(--brass); font-weight: 600; margin-bottom: 6px; }
+  .layer h3 { font-size: 15.5px; margin: 0 0 8px; font-weight: 600; }
+  .layer p { margin: 0; font-size: 13px; color: var(--muted); }
+  .guard {
+    border: 1px solid var(--line); border-left: 3px solid var(--accent);
+    background: var(--card); padding: 20px 24px; font-size: 13.5px;
+  }
+  .guard h3 { margin: 0 0 8px; font-size: 15.5px; font-weight: 600; }
+  .guard ul { margin: 8px 0 0; padding-left: 1.3em; color: var(--muted); }
+  .guard li { margin-bottom: 4px; }
+  .guard li b { color: var(--ink); }
+
+  footer {
+    margin-top: 88px; padding-top: 26px; border-top: 1px solid var(--line);
+    font-size: 12.5px; color: var(--muted); display: flex; flex-wrap: wrap; gap: 8px 34px;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .hero > * { animation: rise .6s ease both; }
+    .hero .thesis { animation-delay: .12s; }
+    .hero .q4 { animation-delay: .2s; }
+    @keyframes rise { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+  }
+</style>
+
+<div class="wrap">
+
+  <header class="hero">
+    <div class="eyebrow">FIRE KIDS × 接客分析　説明資料</div>
+    <h1>なぜ、この項目を見るのか</h1>
+    <div class="q4">
+      <span><b>問一</b>顧客満足は上がるか</span>
+      <span><b>問二</b>売上につながるか</span>
+      <span><b>問三</b>教育コストは下がるか</span>
+      <span><b>問四</b>本人の成長になるか</span>
+    </div>
+  </header>
+
+  <nav class="toc">
+    <a href="#s1" data-n="01">売上への4つの経路</a>
+    <a href="#s2" data-n="02">行動が変わる理由</a>
+    <a href="#s3" data-n="03">項目×4つの問い</a>
+    <a href="#s4" data-n="04">各項目の根拠</a>
+    <a href="#s5" data-n="05">ハイライトの選出ルール</a>
+    <a href="#s6" data-n="06">形骸化を防ぐ設計</a>
+    <a href="#s7" data-n="07">データが溜まると</a>
+    <a href="#s8" data-n="08">効果の確かめ方</a>
+  </nav>
+
+  <section id="s1">
+    <div class="sec-head">
+      <div class="no">01 ─ 因果の全体像</div>
+      <h2>接客の質は、4つの道筋で売上に届く</h2>
+      <p class="lede">録音を「見る」ことがなぜ売上まで届くのか。飛躍せず、段階ごとに根拠を置く。</p>
+    </div>
+
+    <div class="flow">
+      <div class="flow-box"><span class="tag">機能</span><span class="body">録音 → AIによる行動の観察 → 振り返り画面</span></div>
+      <div class="flow-arrow">なぜ行動が変わるか（02章）</div>
+      <div class="flow-box"><span class="tag">行動変化</span><span class="body">ヒアリング・次の接点づくり・傾聴・説明の質が上がる</span></div>
+      <div class="flow-arrow">どの道筋で効くか（下の4経路）</div>
+      <div class="flow-box"><span class="tag">中間指標</span><span class="body">次接点確保率・LINE登録率・査定案内率・ヒアリング実施率</span></div>
+      <div class="flow-arrow"></div>
+      <div class="flow-box result"><span class="tag">成果</span><span class="body">成約率・客単価・リピート・買取仕入れ ＝ 売上　＋　教育コスト削減</span></div>
+    </div>
+
+    <div class="paths">
+      <div class="path">
+        <div class="p-no">経路 一</div>
+        <h3>ヒアリング</h3>
+        <p>目的・予算を引き出す → 提案が刺さる → 成約率・客単価が上がる。ニーズ発見と成約の相関は販売研究のメタ分析で確認されている。</p>
+        <div class="st"><span class="dot g"></span><span class="dot b"></span> 学術＋業界実証</div>
+      </div>
+      <div class="path">
+        <div class="p-no">経路 二</div>
+        <h3>次の接点</h3>
+        <p>取り置き・LINE・再来案内を残す → 後日の成約に転換。高単価ヴィンテージは即決されない——次接点ゼロは検討がFKの外で終わることを意味する。</p>
+        <div class="st"><span class="dot y"></span> 構造的必然（転換率は自社検証予定）</div>
+      </div>
+      <div class="path">
+        <div class="p-no">経路 三</div>
+        <h3>信頼</h3>
+        <p>傾聴と正確な説明 → 販売員への信頼 → 高額品の購入決定。高関与商材では販売員の専門性の知覚が購入の決定要因になる。</p>
+        <div class="st"><span class="dot g"></span> 学術（サービス・プロフィット・チェーン）</div>
+      </div>
+      <div class="path">
+        <div class="p-no">経路 四</div>
+        <h3>買取</h3>
+        <p>査定を案内する → 買取仕入れが増える → 再販利益。リセール業は仕入れが利益の源泉であり、接客中の査定案内がその入口。</p>
+        <div class="st"><span class="dot y"></span> 構造的必然</div>
+      </div>
+    </div>
+
+    <div class="legend">
+      <span><span class="dot g"></span>学術 — 査読研究・メタ分析の裏付け</span>
+      <span><span class="dot b"></span>業界 — 営業・小売の実務で広く実証</span>
+      <span><span class="dot y"></span>構造 — FKの事業構造から論理的に必然</span>
+      <span><span class="dot h"></span>仮説 — 自社データで検証予定</span>
+    </div>
+  </section>
+
+  <section id="s2">
+    <div class="sec-head">
+      <div class="no">02 ─ 行動変化のメカニズム</div>
+      <h2>なぜ「見る」だけで接客が変わるのか</h2>
+      <p class="lede">精神論ではなく、フィードバック研究が示す4つの条件。本システムの設計はこの条件を満たすために選ばれている。</p>
+    </div>
+    <div class="mechs">
+      <div class="mech">
+        <h3>課題に焦点を当てた指摘は効く<span class="dot g"></span></h3>
+        <div class="mv">
+          <p>数百の実験を統合した研究<sup>※</sup>の結論: 行動・タスクへの指摘は成績を改善するが、<b>人への評価（人格・能力の値踏み）に焦点が当たると、約3分の1のケースでむしろ成績が悪化する</b>。「採点せず、行動と根拠発話だけを示す」本システムの設計は、この効果が出る条件を満たすための設計。</p>
+          <p class="fn">※ フィードバック研究のメタ分析（Kluger &amp; DeNisi 1996）。過去約100年分・607件の「フィードバックあり／なし」の比較実験を統計的にまとめ直した、この分野で最も引用される研究。</p>
+        </div>
+      </div>
+      <div class="mech">
+        <h3>具体的な行動目標は激励に勝る<span class="dot g"></span></h3>
+        <p>目標設定理論: 「頑張れ」より「予算を一言聞く」という<b>具体的で少数の目標</b>が一貫して行動を変える。→「次に試せる引き出し」の設計根拠。</p>
+      </div>
+      <div class="mech">
+        <h3>自己認識のズレは数値でしか壊れない<span class="dot g"></span><span class="dot b"></span></h3>
+        <p>自己評価は実態より甘くなる（自己高揚バイアス）。<b>「8:2」という実測を1回見る体験は、100回の「もっと聞こう」という指導に勝る</b>。業界データではトップ営業ほど自分が話す割合が低い。→ 発話バランスの設計根拠。</p>
+      </div>
+      <div class="mech">
+        <h3>良い実例から人は学ぶ<span class="dot g"></span><span class="dot b"></span></h3>
+        <p>モデリング学習。営業実務では録音レビュー＋コーチングが標準手法として市場実証済み（会話分析ツール市場の存在自体が証左）。→ ハイライトと将来の実例ライブラリの設計根拠。</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="s3">
+    <div class="sec-head">
+      <div class="no">03 ─ 一覧</div>
+      <h2>どの項目が、どの問いに効くのか</h2>
+      <p class="lede">全項目×全効果を主張しない。効く経路だけを太く語り、効かないものは「−」と正直に示す——この正直さが資料全体の信頼を作る。</p>
+    </div>
+
+    <div class="matrix-scroll">
+      <table class="matrix">
+        <thead>
+          <tr>
+            <th style="text-align:left">表示項目</th>
+            <th>顧客満足</th><th>売上</th><th>教育コスト</th><th>本人の成長</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="ace"><td class="item">残せた次の接点<small>全項目中もっとも売上に近い</small></td><td class="full">●</td><td class="full">●</td><td class="part">○</td><td class="part">○</td></tr>
+          <tr class="ace"><td class="item">この接客のハイライト<small>強み起点の学習・教材の種</small></td><td class="part">○</td><td class="part">○</td><td class="full">●</td><td class="full">●</td></tr>
+          <tr class="ace"><td class="item">次に試せる引き出し<small>「見て終わり」を防ぐ接続</small></td><td class="part">○</td><td class="part">○</td><td class="full">●</td><td class="full">●</td></tr>
+          <tr class="ace"><td class="item">6軸の行動観察<small>全項目の背骨・共通言語</small></td><td class="full">●</td><td class="full">●</td><td class="full">●</td><td class="full">●</td></tr>
+          <tr><td class="item">発話バランス</td><td class="full">●</td><td class="part">○</td><td class="none">−</td><td class="full">●</td></tr>
+          <tr><td class="item">接客サマリー（要約）</td><td class="none">−</td><td class="none">−</td><td class="full">●</td><td class="full">●</td></tr>
+          <tr><td class="item">商品の具体情報</td><td class="none">−</td><td class="part">○</td><td class="full">●</td><td class="full">●</td></tr>
+          <tr><td class="item">顧客理解・関心/反応<small>育成データ＋顧客カルテの二役</small></td><td class="full">●</td><td class="full">●</td><td class="none">−</td><td class="part">○</td></tr>
+          <tr><td class="item">接客終了時点の状態</td><td class="full">●</td><td class="full">●</td><td class="none">−</td><td class="none">−</td></tr>
+          <tr><td class="item">接客の流れ（帯グラフ）</td><td class="none">−</td><td class="none">−</td><td class="full">●</td><td class="full">●</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="matrix-note"><b>● 主経路</b> ／ ○ 間接効果 ／ − 主張しない</p>
+  </section>
+
+  <section id="s4">
+    <div class="sec-head">
+      <div class="no">04 ─ 各項目の根拠詳説</div>
+      <h2>すべての項目を「消したら何が起きなくなるか」から説明する</h2>
+      <p class="lede">各項目を同じ型で示す: 何を観察しているか／これが無いと何が起きるか／なぜ効くか／形骸化の防ぎ方。</p>
+    </div>
+
+    <div class="group-label"><h3>接客直後の30秒で見るもの</h3><div class="rule"></div><span class="where">サマリータブ・指標カード</span></div>
+
+    <div class="card ace">
+      <div class="card-head">
+        <h4><span class="star">★</span>残せた次の接点</h4>
+        <div class="chips"><span class="chip main">売上②④</span><span class="chip main">顧客満足</span></div>
+      </div>
+      <p class="obs">取り置き・LINE・再来・査定・口コミ——次の接点につながる事実が残せたか（会話で確認できたものだけ）。</p>
+      <div class="lack">
+        <span class="lk-label">これが無いと</span>
+        接客の価値が「売れたか」でしか測れなくなる。高単価ヴィンテージは即決されないため、<b>売らずに信頼を残した良い接客が不可視になり、評価も再現もできない</b>。
+      </div>
+      <div class="card-rows">
+        <div class="crow"><span class="k">なぜ効くか</span><span class="v"><span class="dot g"></span> 「売上を追わない」文化で唯一持てる達成感の形。「LINEを案内する」という具体的行動は目標設定理論が効くとする形そのもの。</span></div>
+        <div class="crow"><span class="k">形骸化と回避</span><span class="v">最大のリスクは<b>件数ノルマ化 → 無理な押し付け</b>。個人ノルマにせず組織の指標に限定し、「押し付けでなく選択肢として提示」の行動観察を質の見張りとして併読する（08章）。<span class="dim">拡張案: 持ち越し期限のフォローリスト化。</span></span></div>
+      </div>
+    </div>
+
+    <div class="card ace">
+      <div class="card-head">
+        <h4><span class="star">★</span>この接客のハイライト</h4>
+        <div class="chips"><span class="chip main">本人の成長</span><span class="chip main">教育コスト</span></div>
+      </div>
+      <p class="obs">行動が最も広く観察できた軸（＋お客様の前向きな反応）を機械的に上位2つ選出。</p>
+      <div class="lack">
+        <span class="lk-label">これが無いと</span>
+        画面が「できていないことリスト」になる。否定に寄ったフィードバックは防衛反応を生んで効果が消える<span class="dot g" style="margin-left:6px"></span>。<b>褒めの入口が無いツールは、開かれなくなる</b>。
+      </div>
+      <div class="card-rows">
+        <div class="crow"><span class="k">なぜ効くか</span><span class="v"><span class="dot g"></span> 正のフィードバックは行動を強化する（強み起点の学習）。機械選出なので「AIのお世辞」ではなく、根拠発話に遡れる<b>事実ベースの承認</b>。選出ルールは05章で開示。</span></div>
+        <div class="crow"><span class="k">形骸化と回避</span><span class="v">毎回同じ軸で飽きる → 蓄積後は「新しく増えた強み」を優先表示。<span class="dim">拡張案: 週次ハイライト集の自動生成（店舗の学び素材）。</span></span></div>
+      </div>
+    </div>
+
+    <div class="card ace">
+      <div class="card-head">
+        <h4><span class="star">★</span>次に試せる引き出し</h4>
+        <div class="chips"><span class="chip main">本人の成長</span><span class="chip main">教育コスト</span></div>
+      </div>
+      <p class="obs">今回観察されなかった行動を、伸びしろの大きい軸から最大3つ提示。</p>
+      <div class="lack">
+        <span class="lk-label">これが無いと</span>
+        振り返りが「見て終わり」になる。<b>見る→次の行動、の接続が消えることが形骸化の最大要因</b>であり、この項目はその接続そのもの。
+      </div>
+      <div class="card-rows">
+        <div class="crow"><span class="k">なぜ効くか</span><span class="v"><span class="dot g"></span> 目標設定理論——「頑張れ」より「予算を一言聞く」という具体的・少数の行動目標が行動を変える。店長の「次はこうしてみたら」を毎接客で代替する。</span></div>
+        <div class="crow"><span class="k">形骸化と回避</span><span class="v">多すぎ・抽象的すぎると無視される → 1接客で試せる粒度・最大3つに制約済み。<b>推奨拡張: 次回の分析で「前回の引き出しを試せたか」を自動判定して表示——成長のループが閉じる</b>（06章）。</span></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-head">
+        <h4>発話バランス</h4>
+        <div class="chips"><span class="chip main">顧客満足</span><span class="chip main">本人の成長</span></div>
+      </div>
+      <p class="obs">スタッフとお客様の発話比率（5:5 のような10割合）。</p>
+      <div class="lack">
+        <span class="lk-label">これが無いと</span>
+        「自分は聞けている」という自己認識を検証する手段が消える。話しすぎは本人が最も自覚しにくい癖で、指摘できるのは同席した店長だけ——<b>同席が無ければ永遠に直らない</b>。
+      </div>
+      <div class="card-rows">
+        <div class="crow"><span class="k">なぜ効くか</span><span class="v"><span class="dot g"></span> 自己評価と実測のズレは数値でしか壊れない。聞いてもらえた実感は経路三（信頼）の起点で、サービス研究で最も安定した経路。</span></div>
+        <div class="crow"><span class="k">形骸化と回避</span><span class="v">基準が無いと流し見になる → 10割合で直感化・判定が疑わしい録音は自動除外（実装済み）。「普段の自分」との比較が始まると最も価値が伸びる。</span></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-head">
+        <h4>接客サマリー（文章要約）</h4>
+        <div class="chips"><span class="chip main">本人の成長</span><span class="chip main">教育コスト</span></div>
+      </div>
+      <p class="obs">接客全体の流れ・お客様のニーズ・提案・結論を3〜5文で。</p>
+      <div class="lack">
+        <span class="lk-label">これが無いと</span>
+        30分の録音を読み返さない限り「何の接客だったか」すら分からない。<b>振り返りの入口が消える</b>。
+      </div>
+      <div class="card-rows">
+        <div class="crow"><span class="k">なぜ効くか</span><span class="v"><span class="dot y"></span> 「時間の圧縮装置」。30分→30秒にすることで、振り返りという行為自体を可能にする。店長は同席なしに接客を把握できる。</span></div>
+        <div class="crow"><span class="k">形骸化と回避</span><span class="v">長文化すると読まれない → 3〜5文に制約済み。<span class="dim">拡張案: 分析完了時の本人通知。</span></span></div>
+      </div>
+      <p class="honest">売上への直接効果は主張しない。</p>
+    </div>
+
+    <div class="group-label"><h3>自分の接客を知る</h3><div class="rule"></div><span class="where">6軸タブ</span></div>
+
+    <div class="card ace">
+      <div class="card-head">
+        <h4><span class="star">★</span>6軸の行動観察</h4>
+        <div class="chips"><span class="chip main">4つの問いすべて</span></div>
+      </div>
+      <p class="obs">「良い接客」という曖昧な印象を、観察可能な行動指標22個×6軸に分解した共通言語。各行動は「あった／なかった／判定場面なし」＋根拠発話。</p>
+      <div class="lack">
+        <span class="lk-label">これが無いと</span>
+        「あの人は接客がうまい」が印象論のまま。<b>教育も、比較も、成長の実感も、共通言語が無ければ成立しない</b>。全項目の背骨。
+      </div>
+      <div class="card-rows">
+        <div class="crow"><span class="k">なぜ効くか</span><span class="v"><span class="dot g"></span> 行動レベルの指摘は効き、人格評価は逆効果（02章）。「採点せず行動を観察する」のは効果条件を満たすための設計。</span></div>
+        <div class="crow"><span class="k">形骸化と回避</span><span class="v">チェックリストの作業化 → 数字・分母を出さず、全行動が根拠発話に遡れる設計で「読む価値」を担保（実装済み）。</span></div>
+      </div>
+      <ul class="axes">
+        <li><b>ヒアリング</b><span>経路一の起点。聞けた条件が提案の精度を決める</span></li>
+        <li><b>傾聴・共感</b><span>経路三・顧客満足の核。発話バランスと連動</span></li>
+        <li><b>査定・クロージング誘導</b><span>経路二・四。次の接点の記録と連動</span></li>
+        <li><b>商品知識の言語化</b><span>経路三。「語れた知識」の可視化（正誤は判定しない）</span></li>
+        <li><b>専門用語のかみ砕き</b><span>経路三。初心者のお客様の「分かった」体験＝満足</span></li>
+        <li><b>オープニング</b><span>第一印象。録音範囲外が多く判定できない場合があることは正直に注記</span></li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <div class="card-head">
+        <h4>述べられた商品の具体情報</h4>
+        <div class="chips"><span class="chip main">本人の成長</span><span class="chip main">教育コスト</span></div>
+      </div>
+      <p class="obs">型番・年代・仕様・相場など、商品について具体的に語れた発言の一覧（正誤は判定しない）。</p>
+      <div class="lack">
+        <span class="lk-label">これが無いと</span>
+        「商品説明したつもり」の中身が残らない。<b>自分が何を語れて何を語れないかの棚卸しができない</b>。
+      </div>
+      <div class="card-rows">
+        <div class="crow"><span class="k">なぜ効くか</span><span class="v"><span class="dot g"></span> 自分の発言を後から見る行為は想起練習として知識を定着させる。新人には先輩の「語り」の具体例になり、FK固有の知識の実例集が自動で溜まる。</span></div>
+        <div class="crow"><span class="k">形骸化と回避</span><span class="v">正誤判定を入れると誤検知で信頼が崩れる → 判定しない設計を明記（商品紐づけ実現後に再検討）。</span></div>
+      </div>
+    </div>
+
+    <div class="group-label"><h3>お客様を知る</h3><div class="rule"></div><span class="where">顧客タブ</span></div>
+
+    <div class="card">
+      <div class="card-head">
+        <h4>顧客理解・関心/反応</h4>
+        <div class="chips"><span class="chip main">顧客満足</span><span class="chip main">売上①</span></div>
+      </div>
+      <p class="obs">来店目的・重視条件・不安・関心商品・反応を、観察事実とAIの解釈を分けて記録。</p>
+      <div class="lack">
+        <span class="lk-label">これが無いと</span>
+        接客が終わると<b>お客様の情報が消える</b>。次に同じお客様が来ても、また一から聞くことになる。
+      </div>
+      <div class="card-rows">
+        <div class="crow"><span class="k">なぜ効くか</span><span class="v"><span class="dot g"></span> 「お客様の目で自分の接客を見る」訓練。顧客視点の獲得と販売成績の相関はメタ分析で確認されている。</span></div>
+        <div class="crow"><span class="k">第二の顔</span><span class="v">育成データであると同時に<b>顧客カルテ（CRM資産）</b>。<span class="dim">拡張案: 再来店時に前回の関心・持ち越しを表示——接客前に読む理由が生まれる。</span></span></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-head">
+        <h4>接客終了時点の状態</h4>
+        <div class="chips"><span class="chip main">売上②</span><span class="chip main">顧客満足</span></div>
+      </div>
+      <p class="obs">接客の終わりに何が確定し、何が持ち越されたか。</p>
+      <div class="lack">
+        <span class="lk-label">これが無いと</span>
+        「金曜までに連絡」のような<b>お客様との約束が個人の記憶頼みになる</b>。忘れられた約束は売上機会の消失であると同時に顧客体験の毀損。
+      </div>
+      <div class="card-rows">
+        <div class="crow"><span class="k">なぜ効くか</span><span class="v"><span class="dot y"></span> 持ち越し＝検討中のお客様の一覧（パイプライン）の可視化。次回接客が「続きから」始められる。</span></div>
+        <div class="crow"><span class="k">形骸化と回避</span><span class="v">記録されても拾われなければ意味がない → <span class="dim">拡張案: 期限付き持ち越しのフォローリスト（効果が最も速く出る拡張）。</span></span></div>
+      </div>
+    </div>
+
+    <div class="group-label"><h3>流れとキーワード</h3><div class="rule"></div><span class="where">流れタブ</span></div>
+
+    <div class="card">
+      <div class="card-head">
+        <h4>接客の流れ（帯グラフ・話題配分）</h4>
+        <div class="chips"><span class="chip main">本人の成長</span><span class="chip main">教育コスト</span></div>
+      </div>
+      <p class="obs">どの話題に、どの順で、どれだけ時間を使ったか。</p>
+      <div class="lack">
+        <span class="lk-label">これが無いと</span>
+        「商品説明に偏りがち」「クロージングが唐突」といった<b>時間配分の癖は、構造化されない限り本人にも店長にも見えない</b>。
+      </div>
+      <div class="card-rows">
+        <div class="crow"><span class="k">なぜ効くか</span><span class="v"><span class="dot y"></span> 会話の「型」の自覚。帯グラフ1本で接客の設計が一瞬で見える（言語より速い）。良い接客の「流れの型」を新人に見せられる。</span></div>
+        <div class="crow"><span class="k">形骸化と回避</span><span class="v">単発では「ふーん」で終わりやすい → 「普段の自分の配分」との比較で本領を発揮する項目と正直に位置づける。</span></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-head">
+        <h4>言及ブランド・キーワード</h4>
+        <div class="chips"><span class="chip guard">集計で価値</span></div>
+      </div>
+      <p class="obs">会話に出たブランド・用語と回数。</p>
+      <div class="lack">
+        <span class="lk-label">これが無いと</span>
+        お客様の関心の変化（何が聞かれ始めたか）が<b>現場の肌感でしか掴めない</b>。
+      </div>
+      <div class="card-rows">
+        <div class="crow"><span class="k">形骸化と回避</span><span class="v">語彙の乱立で集計が壊れる → タグの統制＋AIによる自動整理（実装済み）。</span></div>
+      </div>
+      <p class="honest">個別画面では弱い。価値は集計時——店舗・期間のトレンドとして品揃え・マーケ・研修テーマの材料になる（経営側の項目）。</p>
+    </div>
+  </section>
+
+  <section id="s5">
+    <div class="sec-head">
+      <div class="no">05 ─ 仕組みの開示</div>
+      <h2>ハイライトは、どう選ばれているのか</h2>
+      <p class="lede">AIに「良かった点」を作文させていない。選出は次のルールで機械的に行われる。</p>
+    </div>
+    <div class="rules">
+      <div class="rule-item"><p>接客から<b>実際に観察できた行動</b>（発話の証拠があるもの）だけを数える。</p></div>
+      <div class="rule-item"><p>観察できた行動が<b>最も広く揃った軸</b>から順に選ぶ。</p></div>
+      <div class="rule-item"><p>その行動に<b>お客様の前向きな反応</b>が続いていた場合は優先する。</p></div>
+      <div class="rule-item"><p>選ばれたハイライトは、必ず<b>元の発話（誰が・いつ・何を言ったか）に遡って確認できる</b>。</p></div>
+    </div>
+    <div class="pull">
+      <p>つまり、「褒め言葉」ではなく「証拠のある事実の要約」。</p>
+      <small>細かい判定基準はシステム内で管理・改訂している（すべての分析にバージョンを記録）。</small>
+    </div>
+  </section>
+
+  <section id="s6">
+    <div class="sec-head">
+      <div class="no">06 ─ 形骸化への回答</div>
+      <h2>「良いツールが使われなくなる」原因ごとに、設計で塞ぐ</h2>
+      <p class="lede">形骸化は精神論では防げない。典型的な原因のそれぞれに、システム側の担保を対応させている。</p>
+    </div>
+    <div class="oss">
+      <div class="oss-row">
+        <div class="cause">見る時間がない</div>
+        <div class="fix"><b>30秒サマリー</b>（指標カード・ハイライト・引き出し）を冒頭に配置。詳細はタブで任意。「短時間で振り返れる」を画面構造で保証</div>
+      </div>
+      <div class="oss-row">
+        <div class="cause">評価に使われる恐怖 → 防衛的になる</div>
+        <div class="fix"><b>採点・数字・分母を画面に出さない</b>。これはフィードバック研究の効果条件でもある（02章）</div>
+      </div>
+      <div class="oss-row">
+        <div class="cause">自分に関係ないと感じる</div>
+        <div class="fix"><b>自分の接客・自分のハイライトが主役</b>。引き出しは次の1接客で試せる粒度の具体行動</div>
+      </div>
+      <div class="oss-row">
+        <div class="cause">数字の意味がわからない</div>
+        <div class="fix">単発期の弱点として認識済み。<b>過去の自分との比較</b>で構造的に解消する設計。生データを全件保存しているため過去接客にも遡って比較できる</div>
+      </div>
+      <div class="oss-row">
+        <div class="cause">精度が低くて信頼を失う</div>
+        <div class="fix"><b>すべての観察が根拠発話に遡れる</b>（誤りに本人が気づける）。正誤を断定しない設計。分析はバージョン管理され、改善を過去データに再適用できる</div>
+      </div>
+    </div>
+
+    <div class="loop">
+      <h3>推奨拡張: 「引き出し」のループを閉じる</h3>
+      <p>形骸化の最大要因は「見て終わり」。次回の分析時に前回の引き出しが実際に試されたかを自動判定して表示すれば、成長が本人に見える形で循環し始める。</p>
+      <div class="loop-flow">
+        <span class="n">引き出しを提示</span><span class="a">→</span>
+        <span class="n">次の接客で試す</span><span class="a">→</span>
+        <span class="n">自動判定「試せていました ✓」</span><span class="a">→</span>
+        <span class="n">新しい引き出しへ</span>
+      </div>
+    </div>
+  </section>
+
+  <section id="s7">
+    <div class="sec-head">
+      <div class="no">07 ─ 将来の展望</div>
+      <h2>データが溜まるほど、できることが増える</h2>
+      <p class="lede">生データとバージョンを全件保存しているため、以下はすべて過去に遡って適用できる——今日の接客が、1年後のダッシュボードの1点になる。</p>
+    </div>
+    <div class="tl">
+      <div class="tl-item">
+        <div class="when">数十件〜</div>
+        <h3>組織の行動指標が初めて測れる</h3>
+        <p>次接点確保率・LINE登録率・査定案内率・ヒアリング実施率の集計。<b>「売上を追わない」文化と両立する目標設定</b>が可能になる。</p>
+      </div>
+      <div class="tl-item">
+        <div class="when">数百件〜</div>
+        <h3>過去の自分との比較</h3>
+        <p>「普段の自分」と「今回」の差が見える → 数字に意味が生まれ、形骸化リスクの主要因が解消する<span class="dot g" style="margin-left:6px"></span>（比較基準があるとフィードバック効果は増す）。</p>
+      </div>
+      <div class="tl-item">
+        <div class="when">数百件〜</div>
+        <h3>店舗・期間の傾向分析</h3>
+        <p>店長のコーチングが勘からデータへ。研修テーマをデータで決められる。キーワードのトレンドは品揃え・マーケにも還元。</p>
+      </div>
+      <div class="tl-item big">
+        <div class="when">接客⇔販売の紐づけ後</div>
+        <h3>売上効果を自社データで証明する</h3>
+        <p>「次の接点を残した接客は、残さなかった接客より後日成約率が高いか」——<b>投資判断の根拠を自社の数字で作る</b>。検証されれば最強の社内根拠になる。</p>
+      </div>
+      <div class="tl-item">
+        <div class="when">実例が揃った後</div>
+        <h3>良い接客ライブラリ</h3>
+        <p>根拠発話付きの実例参照で、属人的な「先輩の背中を見て学ぶ」を置き換える。OJT教材が接客データから自動で増え、新人の立ち上がりを短縮する。</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="s8">
+    <div class="sec-head">
+      <div class="no">08 ─ 誠実な検証</div>
+      <h2>効果は3層で確かめる——効かなかった場合も報告する</h2>
+      <p class="lede">目的は学術的証明ではなく、投資判断に足る証拠を最小コストで作ること。仮説と成功基準は事前に文書化し、後付けの解釈を防ぐ。</p>
+    </div>
+    <div class="layers">
+      <div class="layer">
+        <div class="l-no">第一層</div>
+        <h3>行動は変わったか</h3>
+        <p>導入前のベースライン期間（4〜6週・目標なしで現状を測る）と導入後の中間指標を同一店舗で比較。数十件で傾向が見える。</p>
+      </div>
+      <div class="layer">
+        <div class="l-no">第二層</div>
+        <h3>変化はツール起因か</h3>
+        <p>店舗を時期をずらして段階導入し、導入済みと未導入の差を見る。FKは複数店舗があるため実行可能。</p>
+      </div>
+      <div class="layer">
+        <div class="l-no">第三層</div>
+        <h3>売上に繋がったか</h3>
+        <p>接客⇔販売の紐づけ後、「次接点あり／なし」の後日成約率を比較。成約は件数が少ないため四半期単位で判断する。</p>
+      </div>
+    </div>
+    <div class="guard">
+      <h3>目標化のガードレール — 測定が目標になると、測定は歪む</h3>
+      <ul>
+        <li>指標は<b>店舗・組織レベルで見る。個人の目標・評価には使わない</b>（現場に数字を出さない設計と同じ思想）</li>
+        <li>次接点の「質」を守る: 「押し付けでなく選択肢として提示した」の行動観察を併読し、<b>件数が増えて自然さが下がったら歪みのサイン</b>とする</li>
+        <li>目標は絶対値でなく<b>自社ベースラインからの相対改善</b>で設定する（外部ベンチマークの無い指標に根拠のない数字を置かない）</li>
+      </ul>
+    </div>
+  </section>
+
+</div>
+
+</body>
+</html>
